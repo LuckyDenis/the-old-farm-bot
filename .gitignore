@@ -142,3 +142,4 @@ cython_debug/
 
 # github pipline
 !.github/
+!build

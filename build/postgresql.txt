@@ -1,0 +1,7 @@
+./configure --prefix=/usr/local/pgsql \
+    --bindir=/usr/local/bin \
+    --sysconfdir=/usr/local/etc/pgsql \
+    --enable-nls='ru en' \
+    --with-openssl \
+    --with-systemd \
+    --with-system-tzdata=/usr/share/zoneinfo
