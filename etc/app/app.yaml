@@ -1,12 +1,28 @@
 name: the configuration of application
 
-prod: &base
+develop: &base
+  aiogram:
+    VERSION: 1
+    API_TOKEN: '921456167:AAHP-lVSWz10gTLmAh1WhlSERhWv2HEFMvc'
+    WEBHOCK_HOST: localhost
+    WEBHOCK_PATH: /
+    WEBHOCK_PORT: 3001
+    USE_POLLING: true
+    PARSE_MOD: html
+    SKIP_UPDATES: false
+    CHECK_IP: false
+    RETRY_AFTER: null
+    TIMEOUT: 1
+    RELAX: 0.1
+    FAST: true
+
   logging:
+    VERSION: 1
     version: 1
     disable_existing_loggers: true
     formatters:
       standard:
-        format: "[%(asctime)20s][PID %(process)d:%(threadName)s][%(name)s][%(levelname)s][MESSAGE]: %(message)s"
+        format: '[%(asctime)20s][PID %(process)d:%(threadName)s][%(levelname)s][MESSAGE]: %(message)s'
 
     handlers:
       console:
@@ -26,7 +42,7 @@ prod: &base
         propogate: no
 
 
-develop:
+prodaction:
   <<: *base
 
 

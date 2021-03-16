@@ -6,8 +6,8 @@ from app.configer import reader
 from app.configer import BaseFileReader
 from app.configer import YAMLFileReader
 
-ENV_NAME_OF_CONFIG_PATH = 'config_file'
-ENV_NAME_OF_ENVIRONMENT = 'env'
+ENV_NAME_OF_CONFIG_PATH = 'CONFIG_PATH'
+ENV_NAME_OF_ENVIRONMENT = 'ENV'
 DEFAULT_ENVIRONMENT = 'develop'
 DEFAULT_CONFIG_PATH = '/etc/app'
 DEFAULT_CONFIG_NAME = 'app.yaml'
