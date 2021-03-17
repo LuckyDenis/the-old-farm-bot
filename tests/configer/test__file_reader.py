@@ -3,8 +3,8 @@
 import os
 import pytest
 from app.configer import reader
-from app.configer import BaseFileReader
-from app.configer import YAMLFileReader
+from app.configer.file_reader import BaseFileReader
+from app.configer.file_reader import YAMLFileReader
 
 ENV_NAME_OF_CONFIG_PATH = 'CONFIG_PATH'
 ENV_NAME_OF_ENVIRONMENT = 'ENV'
@@ -42,53 +42,47 @@ class TestBaseFileReader:
         assert hasattr(BaseFileReader, variable_name)
         assert getattr(BaseFileReader, variable_name) == variable_value
 
-    def test_init_default_reader(self, monkeypatch):
-        monkeypatch.setattr(
-            reader,
-            'get_from_environ',
-            fake_get_from_environ
+    def test__read_is_not_implemented(self):
+        with pytest.raises(NotImplementedError):
+            BaseFileReader().setup().read()
+
+    def test__search_config_path_default(self, monkeypatch):
+        monkeypatch.delenv(BaseFileReader.ENV_NAME_OF_CONFIG_PATH)
+        default_config_path = os.path.join(
+            DEFAULT_CONFIG_PATH, DEFAULT_CONFIG_NAME
         )
 
         file_reader = BaseFileReader()
-        assert file_reader.environment == DEFAULT_ENVIRONMENT
-
-        default_config_path = os.path.join(
-            DEFAULT_CONFIG_PATH,
-            DEFAULT_CONFIG_NAME)
+        file_reader.search_config_path()
         assert file_reader.config_path == default_config_path
 
-    def test_init_custom_reader(self, monkeypatch):
-        env = 'env'
-        config_path = 'config_path'
-        monkeypatch.setitem(
-            environs,
-            ENV_NAME_OF_ENVIRONMENT,
-            env
-        )
-        monkeypatch.setitem(
-            environs,
-            ENV_NAME_OF_CONFIG_PATH,
-            config_path
-        )
-        monkeypatch.setattr(
-            reader,
-            'get_from_environ',
-            fake_get_from_environ
-        )
+    def test__search_config_path_custom(self, monkeypatch):
+        ANSWER = '/foo/bar/baz.yaml'
+        monkeypatch.setenv(BaseFileReader.ENV_NAME_OF_CONFIG_PATH, ANSWER)
 
         file_reader = BaseFileReader()
-        assert file_reader.environment == env
-        assert file_reader.config_path == config_path
+        file_reader.search_config_path()
+        assert file_reader.config_path == ANSWER
 
-    def test__method_read_is_not_create(self):
+    def test__search_environment_default(self, monkeypatch):
+        monkeypatch.delenv(BaseFileReader.ENV_NAME_OF_ENVIRONMENT)
+
         file_reader = BaseFileReader()
-        with pytest.raises(NotImplementedError):
-            file_reader.read()
+        file_reader.search_environment()
+        assert file_reader.environment == BaseFileReader.DEFAULT_ENVIRONMENT
+
+    def test__search_environment_custom(self, monkeypatch):
+        ANSWER = 'env'
+        monkeypatch.setenv(BaseFileReader.ENV_NAME_OF_ENVIRONMENT, ANSWER)
+
+        file_reader = BaseFileReader()
+        file_reader.search_environment()
+        assert file_reader.environment == ANSWER
 
 
 @pytest.mark.unit
 class TestYAMLFileReader:
-    def test__method_read(self, monkeypatch):
+    def test__read(self, monkeypatch):
         config_path = os.path.join(get_etc_dir(), 'app.yaml')
 
         monkeypatch.setitem(
@@ -103,6 +97,6 @@ class TestYAMLFileReader:
         )
 
         yaml_file_reader = YAMLFileReader()
-        result = yaml_file_reader.read()
+        result = yaml_file_reader.setup().read()
 
         assert isinstance(result, dict)

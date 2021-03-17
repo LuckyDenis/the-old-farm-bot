@@ -1,2 +1,5 @@
 PyYAML==5.4.1
 aiogram==2.12
+contextvars==2.4
+Babel==2.9.0
+emoji==1.2.0
