@@ -7,20 +7,17 @@ from aiogram.utils.executor import start_polling
 from aiogram.types import ParseMode
 from app.configer import ConfigReader
 from app.configer import AiogramVariables
-from app.configer import LoggingVariables
+from app.ui import I18N
+from app.middlewares import UniqueIdMiddleware
 from logging.config import dictConfig
 from logging import getLogger
 
 
-reader = ConfigReader()
+reader = ConfigReader().setup()
 dictConfig(reader.logging())
 
 logger = getLogger(__file__)
-AIOGRAM_CONFIG_VERSION = reader.aiogram(AiogramVariables.VERSION)
-LOGGING_CONFIG_VERSION = reader.aiogram(LoggingVariables.VERSION)
-logger.info(f'CONFIG VERSION: ('
-            f'aiogram: {AIOGRAM_CONFIG_VERSION}, '
-            f'logging: {LOGGING_CONFIG_VERSION})')
+logger.info(f'CONFIG VERSION: {reader.version()}')
 
 parse_modes = {
     'html': ParseMode.HTML,
@@ -28,11 +25,13 @@ parse_modes = {
     'markdown_v2': ParseMode.MARKDOWN_V2
 }
 
+i18n = I18N()
 bot = Bot(
     token=reader.aiogram(AiogramVariables.API_TOKEN),
     parse_mode=parse_modes.get(reader.aiogram(AiogramVariables.PARSE_MOD))
 )
 dp = Dispatcher(bot)
+dp.middleware.setup(UniqueIdMiddleware())
 
 
 async def on_startup_for_webhook(*_, webhook_url):

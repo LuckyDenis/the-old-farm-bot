@@ -1,9 +1,9 @@
 name: the configuration of application
 
 develop: &base
+  VERSION: 1.0.0
   aiogram:
-    VERSION: 1
-    API_TOKEN: '921456167:AAHP-lVSWz10gTLmAh1WhlSERhWv2HEFMvc'
+    API_TOKEN: '123456789:AAAAAAAAAAAAAAAAAaaaAAAAAAAAAAAAAAa'
     WEBHOCK_HOST: localhost
     WEBHOCK_PATH: /
     WEBHOCK_PORT: 3001
@@ -17,7 +17,6 @@ develop: &base
     FAST: true
 
   logging:
-    VERSION: 1
     version: 1
     disable_existing_loggers: true
     formatters:
@@ -41,6 +40,10 @@ develop: &base
         level: INFO
         propogate: no
 
+  i18n:
+    path: ''
+    domain: ''
+    locales:
 
 prodaction:
   <<: *base

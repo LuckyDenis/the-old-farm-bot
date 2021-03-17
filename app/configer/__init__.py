@@ -1,11 +1,11 @@
 # coding: utf-8
 
-from .reader import BaseFileReader
-from .reader import YAMLFileReader
+from .file_reader import BaseFileReader
+from .file_reader import YAMLFileReader
 from .reader import ConfigReader
-from .reader import AiogramVariables
-from .reader import LoggingVariables
-from .reader import BaseVariables
+from .variables import AiogramVariables
+from .variables import BaseVariables
+from .variables import ConfigVariables
 
 
 __all__ = [
@@ -13,6 +13,6 @@ __all__ = [
     YAMLFileReader,
     ConfigReader,
     AiogramVariables,
-    LoggingVariables,
+    ConfigVariables,
     BaseVariables
 ]
