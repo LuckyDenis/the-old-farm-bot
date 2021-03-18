@@ -36,10 +36,10 @@ class CustomNotCorrect:
 @pytest.mark.unit
 class TestConfigReader:
     def test__file_reader_sub_cls_base_file_reader(self):
-        assert issubclass(ConfigReader.FILE_READER, BaseFileReader)
+        assert isinstance(ConfigReader.FILE_READER(), BaseFileReader)
 
     def test__file_reader_is_default(self):
-        assert issubclass(ConfigReader.FILE_READER, YAMLFileReader)
+        assert isinstance(ConfigReader.FILE_READER(), YAMLFileReader)
 
     def test__setup_return_self(self):
         config_reader = ConfigReader()
@@ -69,20 +69,28 @@ class TestConfigReader:
         config_reader = self.create_config_reader()
         assert config_reader.version() == DATA['VERSION']
 
-    def test__merge_variables(self, monkeypatch):
+    @pytest.mark.parametrize(
+        ('env_merge_value', 'variable', 'variable_value'),
+        (
+            (False, 'BAZ', 'BAZ'),
+            (True, 'BAZ', 'baz')
+        )
+    )
+    def test__mount_section(
+            self, monkeypatch, env_merge_value, variable, variable_value):
+
         config_reader = self.create_config_reader()
         monkeypatch.setenv('BAZ', 'baz')
-        variables = {
-            'FOO': 'FOO',
-            'BAZ': 'BAZ'
+        config_reader.data = {
+            'fake': {
+                'BAZ': 'BAZ'
+            }
         }
 
-        section_variables = config_reader.merge_variables(
-            variables,
-            'fake'
+        section_variables = config_reader.mount_section(
+            'fake', env_merge=env_merge_value
         )
-        assert section_variables['FOO'] == 'foo'
-        assert section_variables['BAZ'] == 'baz'
+        assert section_variables[variable] == variable_value
 
     def test__create_logging(self):
         config_reader = self.create_config_reader()

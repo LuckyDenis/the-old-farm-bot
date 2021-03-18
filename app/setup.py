@@ -6,7 +6,6 @@ from aiogram.utils.executor import start_webhook
 from aiogram.utils.executor import start_polling
 from aiogram.types import ParseMode
 from app.configer import ConfigReader
-from app.configer import AiogramVariables
 from app.ui import I18N
 from app.middlewares import UniqueIdMiddleware
 from logging.config import dictConfig
@@ -27,8 +26,8 @@ parse_modes = {
 
 i18n = I18N()
 bot = Bot(
-    token=reader.aiogram(AiogramVariables.API_TOKEN),
-    parse_mode=parse_modes.get(reader.aiogram(AiogramVariables.PARSE_MOD))
+    token=reader.aiogram('API_TOKEN'),
+    parse_mode=parse_modes.get(reader.aiogram('PARSE_MOD'))
 )
 dp = Dispatcher(bot)
 dp.middleware.setup(UniqueIdMiddleware())
@@ -55,10 +54,10 @@ def use_polling():
         dispatcher=dp,
         on_startup=on_startup_for_polling,
         on_shutdown=on_shutdown_for_polling,
-        skip_updates=reader.aiogram(AiogramVariables.SKIP_UPDATES),
-        timeout=reader.aiogram(AiogramVariables.TIMEOUT),
-        relax=reader.aiogram(AiogramVariables.RELAX),
-        fast=reader.aiogram(AiogramVariables.FAST)
+        skip_updates=reader.aiogram('SKIP_UPDATES'),
+        timeout=reader.aiogram('TIMEOUT'),
+        relax=reader.aiogram('RELAX'),
+        fast=reader.aiogram('FAST')
     )
 
 
@@ -67,10 +66,10 @@ def use_webhook():
         dispatcher=dp,
         on_startup=on_startup_for_webhook,
         on_shutdown=on_shutdown_for_webhook,
-        skip_updates=reader.aiogram(AiogramVariables.SKIP_UPDATES),
-        host=reader.aiogram(AiogramVariables.WEBHOOK_HOST),
-        port=reader.aiogram(AiogramVariables.WEBHOOK_PORT),
-        webhook_path=reader.aiogram(AiogramVariables.WEBHOOK_PATH),
-        check_ip=reader.aiogram(AiogramVariables.CHECK_IP),
-        retry_after=reader.aiogram(AiogramVariables.RETRY_AFTER)
+        skip_updates=reader.aiogram('SKIP_UPDATES'),
+        host=reader.aiogram('WEBHOOK_HOST'),
+        port=reader.aiogram('WEBHOOK_PORT'),
+        webhook_path=reader.aiogram('WEBHOOK_PATH'),
+        check_ip=reader.aiogram('CHECK_IP'),
+        retry_after=reader.aiogram('RETRY_AFTER')
     )

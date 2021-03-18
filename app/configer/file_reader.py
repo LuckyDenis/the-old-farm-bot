@@ -18,8 +18,8 @@ class BaseFileReader:
 
     Требует реализации метода `read`.
     Используется для класса `ConfigReader`.
-    Например:
-    `ConfigReader.FILE_READER = YAMLFileReader`
+    Пример:
+    ConfigReader.FILE_READER = YAMLFileReader
     """
 
     ENV_NAME_OF_CONFIG_PATH = 'CONFIG_PATH'
@@ -37,16 +37,17 @@ class BaseFileReader:
         Фасад для удобной настройки и прочтения файла
         с конфигурацией для читателя.
 
-        За место:
+        Пример:
         file_reader = BaseFileReader()
         file_reader.search_config_path()
         file_reader.search_environment()
         file_reader.read()
 
-        Писать так:
+        Пример:
         file_reader = BaseFileReader()
         file_reader.setup().read()
-        :return:
+
+        :return: BaseFileReader
         """
         self.search_config_path()
         self.search_environment()
@@ -74,7 +75,7 @@ class BaseFileReader:
         """
         Требует реализации.
 
-        Например:
+        Пример:
         with open(self.config_path, 'r') as file:
             data = yaml.SafeLoader(file).get_data()
         return data[self.environment]

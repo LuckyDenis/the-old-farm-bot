@@ -3,9 +3,9 @@
 import emoji
 
 
-def emojize(text):
-    return emoji.emojize(str(text), use_aliases=True)
+def emojize(text, use_aliases=True):
+    return emoji.emojize(str(text), use_aliases=use_aliases)
 
 
-def demojize(text):
-    return emoji.demojize(text, use_aliases=True)
+def demojize(text, use_aliases=True):
+    return emoji.demojize(text, use_aliases=use_aliases)
