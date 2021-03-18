@@ -43,7 +43,8 @@ develop: &base
   i18n:
     path: ''
     domain: ''
-    locales:
+    locales: [ ]
+    defailt_locale: ''
 
 prodaction:
   <<: *base
