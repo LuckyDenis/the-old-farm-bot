@@ -20,13 +20,13 @@
     $ pybabel init -i locales/app.pot -d locales -D app -l en
     $ pybabel init -i locales/app.pot -d locales -D app -l ru
 
-Шаг 3: Перевести тексте расположенные в locales/{language}/LC_MESSAGES/app.po
+Шаг 3: Перевести тексты расположенные в locales/{language}/LC_MESSAGES/app.po
 
 Шаг 4: Компилируем перевод
     $ pybabel compile -d locales -D app
 
-Шаг 5: Когда вы меняете код своего бота, вам нужно обновить файлы po & mo.
-    Шаг 5.1: регенерировать файл pot:
+Шаг 5: При внесения изменений кода, нужно обновить файлы *.po и *.mo.
+    Шаг 5.1: регенерировать файл *.pot:
         Шаг 1
     Шаг 5.2: Обновить *.po файлы
         $ pybabel update -d locales -D app -i locales/app.pot
@@ -34,6 +34,8 @@
         расположение вы знаете из шага 3
     Шаг 5.4: Скомпилировать *.mo файлы
         Шаг 4
+
+TODO: Перенести логику в makefile
 """
 
 from typing import Dict, AnyStr, ClassVar
@@ -48,7 +50,7 @@ class I18NMeta(type):
     """
     Паттерн `Одиночка`, для класса I18N.
 
-    Необходим, что бы провесит настройку
+    Необходим, что бы выполнить настройку
     при старте в единой точке настройки
     `app.setup`, и не импортировать на
     прямую в модуль `ConfigReader`.
