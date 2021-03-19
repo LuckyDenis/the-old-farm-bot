@@ -66,7 +66,7 @@ class I18NMeta(type):
 
 class I18N(metaclass=I18NMeta):
     ctx_locale: ClassVar = ContextVar(
-        'ctx_user_locale', default='EN')
+        'ctx_user_locale', default='en')
 
     def __init__(self, path=None, domain=None, locales=None, default_locale=None):
         self.path: AnyStr = path

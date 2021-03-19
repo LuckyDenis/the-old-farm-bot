@@ -1,19 +1,26 @@
 # coding: utf8
 
 import pytest
+from dataclasses import is_dataclass
 from app.configer.reader import ConfigReader
+from app.configer.reader import ConfigSections
 from app.configer.file_reader import BaseFileReader
 from app.configer.file_reader import YAMLFileReader
 
+FAKE_SECTION_NAME = 'fake'
+
 DATA = {
     'VERSION': '1',
-    'logging': {
+    ConfigSections.LOGGING: {
         'FOO': 'foo'
     },
-    'aiogram': {
+    ConfigSections.AIOGRAM: {
         'FOO': 'foo'
     },
-    'fake': {
+    ConfigSections.I18N: {
+        'FOO': 'foo'
+    },
+    FAKE_SECTION_NAME: {
         'FOO': 'foo',
         'BAZ': 'foo'
     }
@@ -31,6 +38,18 @@ def read():
 
 class CustomNotCorrect:
     pass
+
+
+@pytest.mark.unit
+class TestConfigSections:
+    @pytest.mark.parametrize(
+        'section_name',
+        (
+            'AIOGRAM', 'LOGGING', 'I18N', 'VERSION'
+        )
+    )
+    def test__has_section_name(self, section_name):
+        assert hasattr(ConfigSections, section_name)
 
 
 @pytest.mark.unit
@@ -60,7 +79,7 @@ class TestConfigReader:
             config_reader.setup()
 
     @staticmethod
-    def create_config_reader():
+    def create_config_reader() -> ConfigReader:
         config_reader = ConfigReader()
         config_reader.data = DATA
         return config_reader
@@ -76,7 +95,7 @@ class TestConfigReader:
             (True, 'BAZ', 'baz')
         )
     )
-    def test__mount_section(
+    def test__read_section(
             self, monkeypatch, env_merge_value, variable, variable_value):
 
         config_reader = self.create_config_reader()
@@ -87,39 +106,58 @@ class TestConfigReader:
             }
         }
 
-        section_variables = config_reader.mount_section(
+        section_variables = config_reader._read_section(
             'fake', env_merge=env_merge_value
         )
         assert section_variables[variable] == variable_value
 
+    def test__section_how_dataclass(self):
+        config_reader = self.create_config_reader()
+        section_cls = config_reader._section_how_dataclass(
+            FAKE_SECTION_NAME, DATA[FAKE_SECTION_NAME]
+        )
+        assert is_dataclass(section_cls)
+
     def test__create_logging(self):
         config_reader = self.create_config_reader()
 
-        cfg_logging = config_reader.logging()
-        assert isinstance(cfg_logging, dict)
-        assert cfg_logging == DATA['logging']
+        logging_section = config_reader.logging()
+        assert isinstance(logging_section, dict)
+        assert logging_section == DATA[ConfigSections.LOGGING]
 
     def test__logging_once_create(self):
         config_reader = self.create_config_reader()
 
-        cfg_logging_a = config_reader.logging()
-        cfg_logging_b = config_reader.logging()
-        assert id(cfg_logging_a) == id(cfg_logging_b)
+        logging_section_a = config_reader.logging()
+        logging_section_b = config_reader.logging()
+        assert id(logging_section_a) == id(logging_section_b)
 
     def test__create_aiogram(self):
         config_reader = self.create_config_reader()
 
-        cfg_aiogram = config_reader.aiogram('FOO')
-        assert isinstance(cfg_aiogram, str)
-        assert cfg_aiogram == DATA['aiogram']['FOO']
+        aiogram_section = config_reader.aiogram()
+        assert is_dataclass(aiogram_section)
+        assert aiogram_section.FOO == DATA[ConfigSections.AIOGRAM]['FOO']
 
     def test__aiogram_once_create(self):
         config_reader = self.create_config_reader()
 
-        _ = config_reader.aiogram('FOO')
-        cfg_aiogram_a = config_reader._aiogram
+        aiogram_section_a = config_reader.aiogram()
+        aiogram_section_b = config_reader.aiogram()
 
-        _ = config_reader.aiogram('FOO')
-        cfg_aiogram_b = config_reader._aiogram
+        assert id(aiogram_section_a) == id(aiogram_section_b)
 
-        assert id(cfg_aiogram_a) == id(cfg_aiogram_b)
+    def test__create_i18n(self):
+        config_reader = self.create_config_reader()
+
+        i18n_section = config_reader.i18n()
+        assert is_dataclass(i18n_section)
+        assert i18n_section.FOO == DATA[ConfigSections.I18N]['FOO']
+
+    def test__i18n_once_create(self):
+        config_reader = self.create_config_reader()
+
+        i18n_section_a = config_reader.i18n()
+        i18n_section_b = config_reader.i18n()
+
+        assert id(i18n_section_a) == id(i18n_section_b)

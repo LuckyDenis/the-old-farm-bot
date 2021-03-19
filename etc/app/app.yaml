@@ -3,7 +3,7 @@ name: the configuration of application
 develop: &base
   VERSION: 1.0.0
   aiogram:
-    API_TOKEN: '921456167:AAFhzjUUG7tA5hma0H4XFCXBzdZjT1zstC8'
+    API_TOKEN: '123456789:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
     WEBHOCK_HOST: localhost
     WEBHOCK_PATH: /
     WEBHOCK_PORT: 3001
@@ -40,11 +40,15 @@ develop: &base
         level: INFO
         propogate: no
 
+      aiogram:
+        level : INFO
+        propogate: no
+
   i18n:
-    path: ''
-    domain: ''
-    locales: [ ]
-    defailt_locale: ''
+    PATH: './app/ui/locales'
+    DOMAIN: 'app'
+    LOCALES: ['en', 'ru']
+    DEFAULT_LOCALE: 'en'
 
 prodaction:
   <<: *base
