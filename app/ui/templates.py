@@ -8,13 +8,13 @@ _ = i18n.gettext_lazy
 
 class BaseMessage:
     @staticmethod
-    def get_template(states=None):
+    def rendering(states=None):
         raise NotImplementedError()
 
 
 class SystemException(BaseMessage):
     @staticmethod
-    def get_template(states=None):
+    def rendering(states=None):
         format_data = {
             **states
         }

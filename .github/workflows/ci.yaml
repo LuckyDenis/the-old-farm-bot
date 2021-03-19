@@ -40,4 +40,4 @@ jobs:
 
       - name: Testing
         run: |
-          make test-full
+          make test

@@ -12,28 +12,46 @@ from logging.config import dictConfig
 from logging import getLogger
 
 
-reader = ConfigReader().setup()
-dictConfig(reader.logging())
+# ----------- ConfigReader Setup
+config_reader = ConfigReader().setup()
+dictConfig(config_reader.logging())
 
+# ---------- Logging Setup
 logger = getLogger(__file__)
-logger.info(f'CONFIG VERSION: {reader.version()}')
+logger.info(f'CONFIG VERSION: {config_reader.version()}')
 
+
+# ---------- Aiogram Setup
 parse_modes = {
     'html': ParseMode.HTML,
     'markdown': ParseMode.MARKDOWN,
     'markdown_v2': ParseMode.MARKDOWN_V2
 }
 
-i18n = I18N()
+aiogram_section = config_reader.aiogram()
 bot = Bot(
-    token=reader.aiogram('API_TOKEN'),
-    parse_mode=parse_modes.get(reader.aiogram('PARSE_MOD'))
+    token=aiogram_section.APP_AG_API_TOKEN,
+    parse_mode=parse_modes.get(aiogram_section.APP_AG_PARSE_MOD)
 )
 dp = Dispatcher(bot)
+
+
+# ---------- Middleware Setup
 dp.middleware.setup(UniqueIdMiddleware())
 
 
+# ---------- I18N Setup
+i18n_section = config_reader.i18n()
+i18n = I18N(
+    path=i18n_section.APP_LC_PATH,
+    domain=i18n_section.APP_LC_DOMAIN,
+    default_locale=i18n_section.APP_LC_DEFAULT_LOCALE
+)
+
+
+# ---------- Function for bot
 async def on_startup_for_webhook(*_, webhook_url):
+    i18n.reload()
     await bot.set_webhook(webhook_url)
 
 
@@ -42,7 +60,7 @@ async def on_shutdown_for_webhook(*_):
 
 
 async def on_startup_for_polling(*_):
-    pass
+    i18n.reload()
 
 
 async def on_shutdown_for_polling(*_):
@@ -54,10 +72,10 @@ def use_polling():
         dispatcher=dp,
         on_startup=on_startup_for_polling,
         on_shutdown=on_shutdown_for_polling,
-        skip_updates=reader.aiogram('SKIP_UPDATES'),
-        timeout=reader.aiogram('TIMEOUT'),
-        relax=reader.aiogram('RELAX'),
-        fast=reader.aiogram('FAST')
+        skip_updates=aiogram_section.APP_AG_SKIP_UPDATES,
+        timeout=aiogram_section.APP_AG_TIMEOUT,
+        relax=aiogram_section.APP_AG_RELAX,
+        fast=aiogram_section.APP_AG_FAST
     )
 
 
@@ -66,10 +84,10 @@ def use_webhook():
         dispatcher=dp,
         on_startup=on_startup_for_webhook,
         on_shutdown=on_shutdown_for_webhook,
-        skip_updates=reader.aiogram('SKIP_UPDATES'),
-        host=reader.aiogram('WEBHOOK_HOST'),
-        port=reader.aiogram('WEBHOOK_PORT'),
-        webhook_path=reader.aiogram('WEBHOOK_PATH'),
-        check_ip=reader.aiogram('CHECK_IP'),
-        retry_after=reader.aiogram('RETRY_AFTER')
+        skip_updates=aiogram_section.APP_AG_SKIP_UPDATES,
+        host=aiogram_section.APP_AG_WEBHOOK_HOST,
+        port=aiogram_section.APP_AG_WEBHOOK_PORT,
+        webhook_path=aiogram_section.APP_AG_WEBHOOK_PATH,
+        check_ip=aiogram_section.APP_AG_CHECK_IP,
+        retry_after=aiogram_section.APP_AG_RETRY_AFTER
     )

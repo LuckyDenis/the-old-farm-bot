@@ -66,23 +66,32 @@ class I18NMeta(type):
 
 class I18N(metaclass=I18NMeta):
     ctx_locale: ClassVar = ContextVar(
-        'ctx_user_locale', default='EN')
+        'ctx_user_locale', default='en')
 
-    def __init__(self, path=None, domain=None, locales=None, default_locale=None):
+    def __init__(self, path=None, domain=None, default_locale=None):
         self.path: AnyStr = path
         self.domain: AnyStr = domain
-        self.locales: Dict = locales
-        self._setup_default_local(default_locale)
+        self.locales: Dict = dict()
+        self._set_default_local(default_locale)
 
     @classmethod
-    def _setup_default_local(cls, default_local):
-        cls.ctx_locale = ContextVar(
-            'ctx_user_locale', default=default_local)
+    def _set_default_local(cls, default_local):
+        """
+        Устанавливает глобальное значение языка.
+        :param default_local: str
+        """
+        cls.ctx_locale.set(default_local)
 
     def reload(self):
         self.locales = self.find_locales()
 
     def set_locale(self, language: AnyStr):
+        """
+        Устанавливает для конкретного пользователя
+        значения языка.
+
+        :param language: str
+        """
         self.ctx_locale.set(language)
 
     def find_locales(self) -> Dict:
@@ -110,7 +119,7 @@ class I18N(metaclass=I18NMeta):
         if locale is None:
             locale = self.ctx_locale.get()
 
-        if locale not in set(self.locales):
+        if locale not in self.locales:
             if n == 1:
                 return singular
             return plural
