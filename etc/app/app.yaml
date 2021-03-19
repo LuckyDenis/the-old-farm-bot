@@ -3,18 +3,18 @@ name: the configuration of application
 develop: &base
   VERSION: 1.0.0
   aiogram:
-    API_TOKEN: '123456789:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
-    WEBHOCK_HOST: localhost
-    WEBHOCK_PATH: /
-    WEBHOCK_PORT: 3001
-    USE_POLLING: true
-    PARSE_MOD: html
-    SKIP_UPDATES: false
-    CHECK_IP: false
-    RETRY_AFTER: null
-    TIMEOUT: 1
-    RELAX: 0.1
-    FAST: true
+    APP_AG_API_TOKEN: '123456789:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
+    APP_AG_WEBHOCK_HOST: localhost
+    APP_AG_WEBHOCK_PATH: /
+    APP_AG_WEBHOCK_PORT: 3001
+    APP_AG_USE_POLLING: true
+    APP_AG_PARSE_MOD: html
+    APP_AG_SKIP_UPDATES: false
+    APP_AG_CHECK_IP: false
+    APP_AG_RETRY_AFTER: null
+    APP_AG_TIMEOUT: 1
+    APP_AG_RELAX: 0.1
+    APP_AG_FAST: true
 
   logging:
     version: 1
@@ -45,10 +45,9 @@ develop: &base
         propogate: no
 
   i18n:
-    PATH: './app/ui/locales'
-    DOMAIN: 'app'
-    LOCALES: ['en', 'ru']
-    DEFAULT_LOCALE: 'en'
+    APP_LC_PATH: './app/ui/locales'
+    APP_LC_DOMAIN: 'app'
+    APP_LC_DEFAULT_LOCALE: 'en'
 
 prodaction:
   <<: *base

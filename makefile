@@ -8,22 +8,27 @@ run:
 	export CONFIG_PATH=./etc/app/app.yaml; \
 	$(PYTHON) ./app/main.py
 
+
+locales-build:
+	pybabel compile -d ./app/ui/locales/ -D app;
+
+
 install-dev:
 	$(CMD_INSTALL) ./requirements-dev.txt
+
 
 install:
 	$(CMD_INSTALL) ./requirements.txt
 
 
-test-full:
+test:
 	export PYTHONPATH=./app:$$PYTHONPATH; \
 	export ENV=testing; \
 	export CONFIG_PATH=./etc/app/app.yaml; \
-	flake8 ./app ./tests/; pytest ./
-
-test:
-	pytest ./
-
-flake8:
-	flake8 ./app ./tests/
-
+	pybabel extract --input-dirs=./tests/ui/locales -o ./tests/ui/locales/text.pot;\
+	pybabel init -i ./tests/ui/locales/text.pot -d ./tests/ui/locales -D text -l en; \
+	pybabel compile -d ./tests/ui/locales/ -D text; \
+	pybabel init -i ./tests/ui/locales/text.pot -d ./tests/ui/locales -D text -l ru; \
+	flake8 ./app ./tests/; \
+	pytest ./; \
+	rm -rf ./tests/ui/locales/en ./tests/ui/locales/ru ./tests/ui/locales/text.pot;

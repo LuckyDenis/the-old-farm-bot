@@ -5,7 +5,7 @@ from app.setup import aiogram_section  # config_reader.aiogram()
 
 
 def main():
-    if aiogram_section.USE_POLLING:
+    if aiogram_section.APP_AG_USE_POLLING:
         use_polling()
     else:
         use_webhook()
