@@ -7,8 +7,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT 1.0.0\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2021-03-19 16:27+0300\n"
-"PO-Revision-Date: 2021-03-19 16:28+0300\n"
+"POT-Creation-Date: 2021-03-20 16:04+0300\n"
+"PO-Revision-Date: 2021-03-20 16:49+0300\n"
+"Last-Translator: \n"
 "Language: ru\n"
 "Language-Team: ru <LL@li.org>\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
@@ -17,13 +18,32 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.9.0\n"
-"Last-Translator: \n"
 "X-Generator: Poedit 2.4.2\n"
 
-#: app/ui/templates.py:22
+#: app/ui/keyboards.py:30
+msgid "{i_bug} Bug"
+msgstr "{i_bug} Ошибка"
+
+#: app/ui/keyboards.py:42
+msgid "{i_accept} Accept"
+msgstr "{i_accept} Согласие"
+
+#: app/ui/keyboards.py:44
+msgid "{i_not_accept} Not accept"
+msgstr "{i_not_accept} Отказ"
+
+#: app/ui/templates.py:35
 msgid ""
 ":teddy_bear: [ <b>Teddy</b> ]\n"
 "Hello!"
 msgstr ""
-":teddy_bear: [ <b>Teddy</b> ]\n"
+":teddy_bear: [ <b>Тедди</b> ]\n"
 "Привет!"
+
+#: app/ui/templates.py:50
+msgid ""
+":teddy_bear: [ <b>Teddy</b> ]\n"
+"Hello, {unique_id}!"
+msgstr ""
+":teddy_bear: [ <b>Тедди</b> ]\n"
+"Привет, {unique_id}!"

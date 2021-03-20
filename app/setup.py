@@ -5,8 +5,8 @@ from aiogram import Bot
 from aiogram.utils.executor import start_webhook
 from aiogram.utils.executor import start_polling
 from aiogram.types import ParseMode
-from app.configer import ConfigReader
 from app.ui import I18N
+from app.configer import ConfigReader
 from app.middlewares import UniqueIdMiddleware
 from logging.config import dictConfig
 from logging import getLogger
@@ -17,7 +17,7 @@ config_reader = ConfigReader().setup()
 dictConfig(config_reader.logging())
 
 # ---------- Logging Setup
-logger = getLogger(__file__)
+logger = getLogger('app')
 logger.info(f'CONFIG VERSION: {config_reader.version()}')
 
 
@@ -42,7 +42,7 @@ dp.middleware.setup(UniqueIdMiddleware())
 
 # ---------- I18N Setup
 i18n_section = config_reader.i18n()
-i18n = I18N(
+i18n = I18N().setup(
     path=i18n_section.APP_LC_PATH,
     domain=i18n_section.APP_LC_DOMAIN,
     default_locale=i18n_section.APP_LC_DEFAULT_LOCALE
