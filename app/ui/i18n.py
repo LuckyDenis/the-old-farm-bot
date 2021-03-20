@@ -55,13 +55,13 @@ class I18NMeta(type):
     `app.setup`, и не импортировать на
     прямую в модуль `ConfigReader`.
     """
-    _instance: 'I18N' = None
+    instance: 'I18N' = None
 
     def __call__(cls, *args, **kwargs) -> 'I18N':
-        if not cls._instance:
+        if not cls.instance:
             instance = super().__call__(*args, **kwargs)
-            cls._instance = instance
-        return cls._instance
+            cls.instance = instance
+        return cls.instance
 
 
 class I18N(metaclass=I18NMeta):
@@ -73,6 +73,10 @@ class I18N(metaclass=I18NMeta):
         self.domain: AnyStr = domain
         self.locales: Dict = dict()
         self._set_default_local(default_locale)
+
+    def setup(self, path=None, domain=None, default_locale=None):
+        self.__init__(path, domain, default_locale)
+        return self
 
     @classmethod
     def _set_default_local(cls, default_local):

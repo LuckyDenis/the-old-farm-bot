@@ -44,6 +44,10 @@ develop: &base
         level : INFO
         propogate: no
 
+      app.ui.i18n:
+        level: INFO
+        propogate: no
+
   i18n:
     APP_LC_PATH: './app/ui/locales'
     APP_LC_DOMAIN: 'app'

@@ -1,11 +1,11 @@
 # coding: utf8
 
 import pytest
-from app.ui.templates import BaseMessage
+from app.ui.templates import BaseTemplate
 
 
 @pytest.mark.unit
-class TestBaseMessage:
-    def test__rendering(self):
+class TestBaseTemplate:
+    def test__sub_rendering(self):
         with pytest.raises(NotImplementedError):
-            BaseMessage.rendering()
+            BaseTemplate._rendering()
