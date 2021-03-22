@@ -16,7 +16,7 @@ _ = i18n.gettext_lazy
 
 @dataclass()
 class BaseKeyboard:
-    keyboard: (ReplyKeyboardRemove, ReplyKeyboardMarkup)
+    keyboard: (ReplyKeyboardRemove, ReplyKeyboardMarkup) = ReplyKeyboardRemove
 
 
 class Remove(BaseKeyboard):

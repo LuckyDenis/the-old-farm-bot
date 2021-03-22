@@ -7,6 +7,7 @@ from app.core import dispatcher as d
 from app.setup import dp, bot
 
 
+# ---------- cmd: start --------- #
 @dp.message_handler(commands=[Commands.Start.endpoint])
 async def cmd_start(message: t.Message, unique_id):
     user_info = {

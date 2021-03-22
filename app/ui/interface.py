@@ -5,7 +5,7 @@ from logging import getLogger
 import app.ui.keyboards as k7s
 import app.ui.templates as t7s
 from app.ui.answer import AnswerWithText
-from app.ui.answer import MessageType
+
 
 logger = getLogger('app.ui.interface')
 
@@ -41,7 +41,6 @@ class SystemException(BaseInterface):
 
         answer_with_text = AnswerWithText(
             chat_id=answer_info['chat_id'],
-            message_type=MessageType.TEXT,
             text=answer_text,
             unique_id=answer_info['unique_id'],
             keyboard=k7s.SystemException.keyboard
@@ -62,7 +61,6 @@ class NewUser(BaseInterface):
 
         answer_with_text = AnswerWithText(
             chat_id=answer_info['chat_id'],
-            message_type=MessageType.TEXT,
             text=answer_text,
             unique_id=answer_info['unique_id'],
             keyboard=k7s.NewUser.keyboard

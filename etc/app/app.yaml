@@ -3,7 +3,7 @@ name: the configuration of application
 develop: &base
   VERSION: 1.0.0
   aiogram:
-    APP_AG_API_TOKEN: '123456789:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
+    APP_AG_API_TOKEN: '921456167:AAHS4-Woq0k-AbgsU3_Tkm-44HHu8eMK_bM'
     APP_AG_WEBHOCK_HOST: localhost
     APP_AG_WEBHOCK_PATH: /
     APP_AG_WEBHOCK_PORT: 3001

@@ -7,11 +7,32 @@ logger = getLogger('app.core.station')
 
 
 class BaseStation:
+    """
+    Интерфейс для классов необходимых классу `BaseItinerary`.
+
+    Позволяют сделать какие-то небольшие наборы операций
+    надо пользовательским запросом. Что дает возможность
+    переиспользовать себя. Можно собирать в грозди.
+    Подход паттерна `Цепочка обязанностей`.
+    """
+
     @classmethod
     async def stopover(cls, train):
+        """
+        Точка входа, если при обработке запроса
+        что-то где-то сломается, то сообщаем модулю
+        выше, и уже выше стоящий модуль решает,
+        как разобраться с возникшей ситуацией.
+        У выше стоящих модулей, больше возможностей
+        более чисто разрешить возникшую ситуацию.
+
+        :param train: app.core.train
+        """
+        train.visited.append(cls)
         try:
             await cls._stopover(train)
         except (KeyError, ValueError) as e:
+            train.has_fail = True
             logger.error(f'error: {e}, cls: {cls}, train: {train}')
 
     @classmethod
