@@ -1,7 +1,7 @@
 # coding: utf8
 
 import pytest
-from app.configer.utils import get_from_environ
+from app.configure.utils import get_from_environ
 
 
 @pytest.mark.unit

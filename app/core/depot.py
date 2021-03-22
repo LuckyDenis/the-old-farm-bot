@@ -1,13 +1,13 @@
 # coding: utf8
 
-from typing import AnyStr, List, Collection, Dict
 from dataclasses import dataclass
 
 
 @dataclass()
 class Train:
-    unique_id: int
-    destination: AnyStr
-    answers: List[Collection]
+    unique_id: str
+    chat_id: int
+    destination: str
+    answers: list
     has_fail: bool
-    storage: Dict
+    storage: dict

@@ -21,7 +21,7 @@ develop: &base
     disable_existing_loggers: true
     formatters:
       standard:
-        format: '[%(asctime)20s][PID %(process)d:%(threadName)s][%(levelname)s][MESSAGE]: %(message)s'
+        format: '[%(levelname)-7s][%(funcName)-15s][%(lineno)4d][MSG]: %(message)s'
 
     handlers:
       console:
@@ -36,17 +36,44 @@ develop: &base
       propogate: yes
 
     loggers:
-      app:
-        level: INFO
-        propogate: no
-
       aiogram:
         level : INFO
         propogate: no
 
-      app.ui.i18n:
+      app:
         level: INFO
         propogate: no
+
+      app.middleware:
+        level: DEBUG
+        propogate: on
+
+      app.controllers:
+        level: DEBUG
+        propogate: on
+
+      app.core:
+        level: DEBUG
+        propogate: no
+
+      app.core.dispatcher:
+        level: DEBUG
+        propogate: no
+
+      app.ui.interface:
+        level: DEBUG
+        propogate: no
+
+      app.ui.i18n:
+        level: DEBUG
+        propogate: no
+
+      app.ui.templates:
+        level: DEBUG
+        propogate: no
+
+
+
 
   i18n:
     APP_LC_PATH: './app/ui/locales'

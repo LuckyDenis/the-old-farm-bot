@@ -1,8 +1,15 @@
 # coding: utf8
 
-from app.core.dispatcher import CmdStart
+from logging import getLogger
+from app.core import depot
+from app.core import dispatcher
+from app.core import stations
 
+
+getLogger('app.core')
 
 __all__ = [
-    CmdStart
+    depot,
+    dispatcher,
+    stations
 ]

@@ -2,10 +2,7 @@
 
 from dataclasses import dataclass
 from enum import Enum, auto, unique
-from typing import Union, AnyStr
-
-from aiogram.types import ReplyKeyboardMarkup
-from aiogram.types import ReplyKeyboardRemove
+from app.ui.keyboards import BaseKeyboard
 
 
 @unique
@@ -17,8 +14,8 @@ class MessageType(Enum):
 class BaseAnswer:
     chat_id: int
     message_type: MessageType
-    unique_id: AnyStr
-    keyboard: Union[ReplyKeyboardRemove, ReplyKeyboardMarkup]
+    unique_id: str
+    keyboard: BaseKeyboard
 
 
 @dataclass()

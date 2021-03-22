@@ -2,9 +2,9 @@
 
 import os
 import pytest
-from app.configer import reader
-from app.configer.file_reader import BaseFileReader
-from app.configer.file_reader import YAMLFileReader
+from app.configure import reader
+from app.configure.file_reader import BaseFileReader
+from app.configure.file_reader import YAMLFileReader
 
 ENV_NAME_OF_CONFIG_PATH = 'CONFIG_PATH'
 ENV_NAME_OF_ENVIRONMENT = 'ENV'
