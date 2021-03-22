@@ -46,7 +46,9 @@ class TestCmd:
             (Commands.Start, ATTR_UI, ATTR_UI_TYPE),
             (Commands.Start, ATTR_ENDPOINT, ATTR_ENDPOINT_TYPE),
             (Commands.Help, ATTR_UI, ATTR_UI_TYPE),
-            (Commands.Help, ATTR_UI, ATTR_ENDPOINT_TYPE)
+            (Commands.Help, ATTR_UI, ATTR_ENDPOINT_TYPE),
+            (Commands.Bug, ATTR_UI, ATTR_UI_TYPE),
+            (Commands.Bug, ATTR_ENDPOINT, ATTR_ENDPOINT_TYPE)
         )
     )
     def test__attr(self, cmd, attr, attr_type):

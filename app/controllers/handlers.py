@@ -1,14 +1,13 @@
 # coding: utf8
 
 from aiogram import types as t
-
-from app import core
-from app.setup import bot
-from app.setup import dp
-from app.ui import Commands
-from .utils import send_messages
+from app.ui.commands import Commands
+from app.controllers.utils import send_messages
+from app.core import dispatcher as d
+from app.setup import dp, bot
 
 
+# ---------- cmd: start --------- #
 @dp.message_handler(commands=[Commands.Start.endpoint])
 async def cmd_start(message: t.Message, unique_id):
     user_info = {
@@ -16,5 +15,6 @@ async def cmd_start(message: t.Message, unique_id):
         'chat_id': message.chat.id,
         'unique_id': unique_id
     }
-    answers = await core.CmdStart.into(user_info)
-    await send_messages(bot, answers)
+    train = await d.CmdStart.on_itinerary(user_info)
+
+    await send_messages(bot, train)

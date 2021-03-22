@@ -1,13 +1,14 @@
 # coding: utf8
 
 from dataclasses import dataclass
-from typing import Union
 
 from aiogram.types import KeyboardButton
 from aiogram.types import ReplyKeyboardMarkup
 from aiogram.types import ReplyKeyboardRemove
 
 from app.ui.i18n import I18N
+from app.ui.commands import Commands
+
 
 i18n = I18N()
 _ = i18n.gettext_lazy
@@ -15,7 +16,7 @@ _ = i18n.gettext_lazy
 
 @dataclass()
 class BaseKeyboard:
-    keyboard: Union[ReplyKeyboardRemove, ReplyKeyboardMarkup]
+    keyboard: (ReplyKeyboardRemove, ReplyKeyboardMarkup) = ReplyKeyboardRemove
 
 
 class Remove(BaseKeyboard):
@@ -28,7 +29,7 @@ class SystemException(BaseKeyboard):
             one_time_keyboard=False
         ).row(
             KeyboardButton(_("{i_bug} Bug").format(
-                i_bug='/bug'
+                i_bug=Commands.Bug.ui
             ))
         )
 

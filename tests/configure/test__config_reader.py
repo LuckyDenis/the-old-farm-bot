@@ -2,10 +2,10 @@
 
 import pytest
 from dataclasses import is_dataclass
-from app.configer.reader import ConfigReader
-from app.configer.reader import ConfigSections
-from app.configer.file_reader import BaseFileReader
-from app.configer.file_reader import YAMLFileReader
+from app.configure.reader import ConfigReader
+from app.configure.reader import ConfigSections
+from app.configure.file_reader import BaseFileReader
+from app.configure.file_reader import YAMLFileReader
 
 FAKE_SECTION_NAME = 'fake'
 

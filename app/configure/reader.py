@@ -1,31 +1,30 @@
 # coding: utf-8
 
 from dataclasses import dataclass, make_dataclass
-from typing import AnyStr, Dict, Type
 
-from .file_reader import BaseFileReader
-from .file_reader import YAMLFileReader
-from .utils import get_from_environ
+from app.configure.file_reader import BaseFileReader
+from app.configure.file_reader import YAMLFileReader
+from app.configure.utils import get_from_environ
 
 
 @dataclass
 class ConfigSections:
-    AIOGRAM: AnyStr = 'aiogram'
-    LOGGING: AnyStr = 'logging'
-    I18N: AnyStr = 'i18n'
+    AIOGRAM = 'aiogram'
+    LOGGING = 'logging'
+    I18N = 'i18n'
     VERSION = 'VERSION'
 
 
 class ConfigReader:
-    FILE_READER: Type[BaseFileReader] = YAMLFileReader
+    FILE_READER = YAMLFileReader
 
     def __init__(self):
-        self.data: Dict = dict()
-        self._aiogram: Dict = dict()
-        self._logging: Dict = dict()
-        self._i18n: Dict = dict()
+        self.data = dict()
+        self._aiogram = dict()
+        self._logging = dict()
+        self._i18n = dict()
 
-    def setup(self) -> 'ConfigReader':
+    def setup(self):
         """
         Настройка и чтения файла конфигурации.
 
@@ -46,15 +45,14 @@ class ConfigReader:
         self.data = file_reader.setup().read()
         return self
 
-    def _read_section(self, section_name: AnyStr, env_merge: bool = False) -> Dict:
+    def _read_section(self, section_name, env_merge=False):
         """
         Читает секцию с переменными.
 
-        Флаг `env_merge=True` указывает на логику обработки
-        значений которые будут храниться в прочитанной секции.
         Так как не для всех секций необходимо слияние значений
-        переменных из файла конфигурации и значения переменных
-        окружения.
+        переменных из файла и значения переменных окружения, то
+        используем флаг `env_merge`. Он указывает на логику обработки
+        значений которые будут храниться в прочитанной секции.
 
         Переменные окружения имеют более высоки приоритет, по этому
         перезаписывают значения переменных из файла конфигурации.
@@ -74,7 +72,7 @@ class ConfigReader:
                 section[variable] = value
         return section
 
-    def version(self) -> AnyStr:
+    def version(self):
         """
         Версия файла конфигурации.
         1.2.3
@@ -87,11 +85,11 @@ class ConfigReader:
         return self.data[ConfigSections.VERSION]
 
     @staticmethod
-    def _section_how_dataclass(cls_name: AnyStr, fields: Dict) -> dataclass:
+    def _section_how_dataclass(cls_name, fields):
         cls = make_dataclass(cls_name, fields=fields, eq=False)
         return cls(**fields)
 
-    def aiogram(self) -> dataclass:
+    def aiogram(self):
         """
         Отдаем `dataclass`, а не словарь, так как
         получившийся код будет чище, в разделе
@@ -108,7 +106,7 @@ class ConfigReader:
 
         return self._aiogram
 
-    def logging(self) -> Dict:
+    def logging(self):
         """
         Отдаем сразу словарь, так как интерфейс
         библиотеки `logging` позволяет настройку
@@ -123,7 +121,7 @@ class ConfigReader:
             )
         return self._logging
 
-    def i18n(self) -> dataclass:
+    def i18n(self):
         """
         Отдаем `dataclass`, а не словарь, так как
         получившийся код будет чище, в разделе настройки

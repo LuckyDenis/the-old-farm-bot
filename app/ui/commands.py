@@ -1,12 +1,11 @@
 # coding: utf8
 from dataclasses import dataclass
-from typing import AnyStr
 
 
 @dataclass
 class BaseCmd:
-    ui: AnyStr = 'ui'
-    endpoint: AnyStr = 'endpoint'
+    ui = 'ui'
+    endpoint = 'endpoint'
 
 
 @dataclass
@@ -36,3 +35,8 @@ class Commands:
     class Help(BaseCmd):
         ui = '/help'
         endpoint = 'help'
+
+    @dataclass
+    class Bug(BaseCmd):
+        ui = '/bug'
+        endpoint = 'bug'
