@@ -1,24 +1,28 @@
 # coding: utf8
 from logging import getLogger
+from app.ui.i18n import I18N
+from app.ui.utils import emojize
 
-from .i18n import I18N
-from .utils import emojize
+logger = getLogger('app.ui.templates')
+
 
 i18n = I18N()
 _ = i18n.gettext_lazy
 
 
-logger = getLogger('app.ui.i18n')
-
-
 class BaseTemplate:
     @classmethod
     def rendering(cls, state=None):
+        logger.debug(f'state: {state}, '
+                     f'locale: {i18n.ctx_locale.get()}')
         try:
             i18n.set_locale(state['locale'])
             return cls._rendering(state=state)
         except KeyError as e:
-            logger.error(e)
+            logger.error(
+                f'error: {e}, '
+                f'locale: {i18n.ctx_locale.get()}, '
+                f'state: {state}')
 
     @classmethod
     def _rendering(cls, state=None):

@@ -38,12 +38,15 @@
 TODO: Перенести логику в makefile
 """
 
-from typing import Dict, AnyStr, ClassVar
+from logging import getLogger
 import gettext
 import os
 from contextvars import ContextVar
 
 from babel.support import LazyProxy
+
+
+logger = getLogger('app.ui.i18n')
 
 
 class I18NMeta(type):
@@ -55,9 +58,9 @@ class I18NMeta(type):
     `app.setup`, и не импортировать на
     прямую в модуль `ConfigReader`.
     """
-    instance: 'I18N' = None
+    instance = None
 
-    def __call__(cls, *args, **kwargs) -> 'I18N':
+    def __call__(cls, *args, **kwargs):
         if not cls.instance:
             instance = super().__call__(*args, **kwargs)
             cls.instance = instance
@@ -65,16 +68,19 @@ class I18NMeta(type):
 
 
 class I18N(metaclass=I18NMeta):
-    ctx_locale: ClassVar = ContextVar(
+    ctx_locale = ContextVar(
         'ctx_user_locale', default='en')
 
     def __init__(self, path=None, domain=None, default_locale=None):
-        self.path: AnyStr = path
-        self.domain: AnyStr = domain
-        self.locales: Dict = dict()
+        self.path = path
+        self.domain = domain
+        self.locales = dict()
         self._set_default_local(default_locale)
 
     def setup(self, path=None, domain=None, default_locale=None):
+        logger.debug(f'path: {path}, domain: {domain}, '
+                     f'default_locale: {default_locale})')
+
         self.__init__(path, domain, default_locale)
         return self
 
@@ -89,7 +95,7 @@ class I18N(metaclass=I18NMeta):
     def reload(self):
         self.locales = self.find_locales()
 
-    def set_locale(self, language: AnyStr):
+    def set_locale(self, language):
         """
         Устанавливает для конкретного пользователя
         значения языка.
@@ -98,7 +104,7 @@ class I18N(metaclass=I18NMeta):
         """
         self.ctx_locale.set(language)
 
-    def find_locales(self) -> Dict:
+    def find_locales(self):
         translations = dict()
 
         for name in os.listdir(self.path):
@@ -117,9 +123,10 @@ class I18N(metaclass=I18NMeta):
                                    f"Подробней в docstring модуля "
                                    f"`app.ui.i18n`.")
 
+        logger.debug(f'translations: {translations}')
         return translations
 
-    def gettext(self, singular, plural=None, n=1, locale=None) -> AnyStr:
+    def gettext(self, singular, plural=None, n=1, locale=None):
         if locale is None:
             locale = self.ctx_locale.get()
 
@@ -136,10 +143,12 @@ class I18N(metaclass=I18NMeta):
 
     def gettext_lazy(
             self, singular, plural=None, n=1,
-            locale=None, enable_cache=True) -> LazyProxy:
+            locale=None, enable_cache=True):
         return LazyProxy(
             self.gettext, singular, plural, n,
             locale, enable_cache=enable_cache)
 
-    def __call__(self, singular, plural=None, n=1, locale=None) -> AnyStr:
+    def __call__(self, singular, plural=None, n=1, locale=None):
+        logger.debug(
+            f'(singular: {singular}, plural: {plural}, n: {n}, locale: {locale})')
         return self.gettext(singular, plural, n, locale)

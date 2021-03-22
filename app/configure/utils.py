@@ -1,8 +1,7 @@
 # coding: utf8
 
 import os
-from typing import AnyStr
 
 
-def get_from_environ(environ_name) -> AnyStr:
+def get_from_environ(environ_name):
     return os.environ.get(str(environ_name))

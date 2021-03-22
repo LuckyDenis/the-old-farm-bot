@@ -1,11 +1,9 @@
 # coding: utf8
 
 import os
-from typing import Dict, NoReturn
-
 import yaml
 
-from .utils import get_from_environ
+from app.configure.utils import get_from_environ
 
 
 class BaseFileReader:
@@ -13,8 +11,8 @@ class BaseFileReader:
     Базовый класс для читателей конфигурационных файлов.
 
     Позволяет через единый интерфейс, реализовывать логику
-    получения необходимых конфигурационных данных из различных
-    типов файлов, без внесения изменения в кодовую базу.
+    получения необходимых данных из различных типов файлов,
+    без внесения изменения в кодовую базу.
 
     Требует реализации метода `read`.
     Используется для класса `ConfigReader`.
@@ -32,10 +30,9 @@ class BaseFileReader:
         self.config_path = None
         self.environment = None
 
-    def setup(self) -> 'BaseFileReader':
+    def setup(self):
         """
-        Фасад для удобной настройки и прочтения файла
-        с конфигурацией для читателя.
+        Фасад для удобной настройки и чтение файла.
 
         Пример:
         file_reader = BaseFileReader()
@@ -53,7 +50,7 @@ class BaseFileReader:
         self.search_environment()
         return self
 
-    def search_config_path(self) -> NoReturn:
+    def search_config_path(self):
         self.config_path = get_from_environ(
             self.ENV_NAME_OF_CONFIG_PATH
         )
@@ -63,7 +60,7 @@ class BaseFileReader:
                 self.DEFAULT_CONFIG_PATH,
                 self.DEFAULT_CONFIG_NAME)
 
-    def search_environment(self) -> NoReturn:
+    def search_environment(self):
         self.environment = get_from_environ(
             self.ENV_NAME_OF_ENVIRONMENT
         )
@@ -71,7 +68,7 @@ class BaseFileReader:
         if not self.environment:
             self.environment = self.DEFAULT_ENVIRONMENT
 
-    def read(self) -> Dict:
+    def read(self):
         """
         Требует реализации.
 
@@ -87,12 +84,12 @@ class BaseFileReader:
 
 class YAMLFileReader(BaseFileReader):
     """
-    Читатель конфигурационного файла в формате `YAML`.
+    Читатель файла в формате `YAML`.
 
     Больше информации в docstring класса `BaseFileReader`.
     """
 
-    def read(self) -> dict:
+    def read(self):
         """
         :return: dict
         """

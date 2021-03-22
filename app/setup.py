@@ -1,24 +1,22 @@
 # coding: utf8
 
+from app.ui.i18n import I18N
+from app.configure.reader import ConfigReader
+from app.middlewares.unique_id import UniqueIdMiddleware
 from aiogram import Dispatcher
 from aiogram import Bot
 from aiogram.utils.executor import start_webhook
 from aiogram.utils.executor import start_polling
 from aiogram.types import ParseMode
-from app.ui import I18N
-from app.configer import ConfigReader
-from app.middlewares import UniqueIdMiddleware
+
 from logging.config import dictConfig
-from logging import getLogger
 
 
 # ----------- ConfigReader Setup
 config_reader = ConfigReader().setup()
-dictConfig(config_reader.logging())
 
 # ---------- Logging Setup
-logger = getLogger('app')
-logger.info(f'CONFIG VERSION: {config_reader.version()}')
+dictConfig(config_reader.logging())
 
 
 # ---------- Aiogram Setup

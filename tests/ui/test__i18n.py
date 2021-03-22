@@ -6,9 +6,12 @@ import contextvars
 import gettext
 import pytest
 
+from os.path import exists
+from os.path import join
+from os.path import dirname
 from app.ui.i18n import I18N, I18NMeta
 
-LC_PATH = os.path.join(os.path.dirname(__file__), 'locales')
+LC_PATH = join(dirname(__file__), 'locales')
 LC_DOMAIN = 'text'
 
 
@@ -143,6 +146,9 @@ class TestI18N:
             singular, plural, n, locale=locale)
         assert result == answer
 
+    @pytest.mark.skipif(
+        exists(join(LC_PATH, 'en')) is False,
+        reason='Необходимо использовать `make test`.')
     def test__find_compiled_locales(self, monkeypatch):
         monkeypatch.setattr(
             os, 'listdir',
@@ -155,6 +161,9 @@ class TestI18N:
         assert isinstance(locales, dict)
         assert 'en' in locales
 
+    @pytest.mark.skipif(
+        exists(join(LC_PATH, 'ru')) is False,
+        reason='Необходимо использовать `make test`.')
     def test__find_not_compiled_locales(self, monkeypatch):
         monkeypatch.setattr(
             os, 'listdir',

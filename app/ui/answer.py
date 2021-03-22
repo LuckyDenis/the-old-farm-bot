@@ -1,11 +1,8 @@
 # coding: utf8
 
-from dataclasses import dataclass
-from enum import Enum, auto, unique
-from typing import Union, AnyStr
-
-from aiogram.types import ReplyKeyboardMarkup
-from aiogram.types import ReplyKeyboardRemove
+from dataclasses import dataclass, field
+from enum import Enum, unique, auto
+from app.ui.keyboards import BaseKeyboard
 
 
 @unique
@@ -13,14 +10,17 @@ class MessageType(Enum):
     TEXT = auto()
 
 
-@dataclass()
+@dataclass
 class BaseAnswer:
     chat_id: int
-    message_type: MessageType
-    unique_id: AnyStr
-    keyboard: Union[ReplyKeyboardRemove, ReplyKeyboardMarkup]
+    unique_id: str
+    keyboard: BaseKeyboard
+    message_type: auto() = field(init=False)
 
 
-@dataclass()
+@dataclass
 class AnswerWithText(BaseAnswer):
-    text: MessageType.TEXT
+    text: str
+
+    def __post_init__(self):
+        self.message_type = MessageType.TEXT

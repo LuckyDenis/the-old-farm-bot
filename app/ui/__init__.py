@@ -1,12 +1,20 @@
 # coding: utf8
 
-from .i18n import I18N
-from .i18n import I18NMeta
-from .commands import Commands
+from logging import getLogger
+from app.ui import answer
+from app.ui import keyboards
+from app.ui import i18n
+from app.ui import commands
+from app.ui import templates
+
+
+getLogger('app.ui')
 
 
 __all__ = [
-    I18N,
-    I18NMeta,
-    Commands
+    answer,
+    keyboards,
+    i18n,
+    commands,
+    templates
 ]
