@@ -1,9 +1,15 @@
 # coding: utf8
+from __future__ import annotations
+from typing import TYPE_CHECKING
 
 import os
 import yaml
 
 from app.configure.utils import get_from_environ
+
+
+if TYPE_CHECKING:
+    from app.typehint import TDict, TOptionAnyStr, TFileReader
 
 
 class BaseFileReader:
@@ -27,10 +33,10 @@ class BaseFileReader:
     DEFAULT_CONFIG_NAME = 'app.yaml'
 
     def __init__(self):
-        self.config_path = None
-        self.environment = None
+        self.config_path: TOptionAnyStr = None
+        self.environment: TOptionAnyStr = None
 
-    def setup(self):
+    def setup(self) -> TFileReader:
         """
         Фасад для удобной настройки и чтение файла.
 
@@ -68,7 +74,7 @@ class BaseFileReader:
         if not self.environment:
             self.environment = self.DEFAULT_ENVIRONMENT
 
-    def read(self):
+    def read(self) -> TDict:
         """
         Требует реализации.
 
@@ -89,7 +95,7 @@ class YAMLFileReader(BaseFileReader):
     Больше информации в docstring класса `BaseFileReader`.
     """
 
-    def read(self):
+    def read(self) -> TDict:
         """
         :return: dict
         """

@@ -35,10 +35,7 @@ class TestBaseItinerary:
         assert train.unique_id == UNIQUE_ID
         assert train.chat_id == CHAT_ID
         assert train.storage.get('user_info', False)
-        assert train.storage['user_info'] == {
-            'locale': LOCALE,
-            'chat_id': CHAT_ID
-        }
+        assert train.storage['user_info'] == USER_INFO
         assert isinstance(train.answers, list)
         assert len(train.answers) == 0
         assert len(train.visited) == 0

@@ -1,5 +1,4 @@
 # coding: utf8
-
 from dataclasses import dataclass
 
 from aiogram.types import KeyboardButton
@@ -16,7 +15,7 @@ _ = i18n.gettext_lazy
 
 @dataclass()
 class BaseKeyboard:
-    keyboard: (ReplyKeyboardRemove, ReplyKeyboardMarkup) = ReplyKeyboardRemove
+    keyboard: (ReplyKeyboardRemove, ReplyKeyboardMarkup) = ReplyKeyboardRemove()
 
 
 class Remove(BaseKeyboard):

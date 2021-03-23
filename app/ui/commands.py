@@ -1,11 +1,16 @@
 # coding: utf8
+from __future__ import annotations
+from typing import TYPE_CHECKING
 from dataclasses import dataclass
+
+if TYPE_CHECKING:
+    from app.typehint import TAnyStr
 
 
 @dataclass
 class BaseCmd:
-    ui = 'ui'
-    endpoint = 'endpoint'
+    ui: TAnyStr
+    endpoint: TAnyStr
 
 
 @dataclass
