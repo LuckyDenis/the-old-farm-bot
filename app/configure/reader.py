@@ -1,30 +1,40 @@
 # coding: utf-8
-
+from __future__ import annotations
 from dataclasses import dataclass, make_dataclass
+from typing import TYPE_CHECKING
 
 from app.configure.file_reader import BaseFileReader
 from app.configure.file_reader import YAMLFileReader
 from app.configure.utils import get_from_environ
 
 
+if TYPE_CHECKING:
+    from app.typehint import TAnyStr
+    from app.typehint import TFileReader
+    from app.typehint import TDict
+    from app.typehint import TConfigReader
+    from app.typehint import TBool
+    from app.typehint import TDataClass
+
+
 @dataclass
 class ConfigSections:
-    AIOGRAM = 'aiogram'
-    LOGGING = 'logging'
-    I18N = 'i18n'
-    VERSION = 'VERSION'
+    AIOGRAM: TAnyStr = 'aiogram'
+    LOGGING: TAnyStr = 'logging'
+    I18N: TAnyStr = 'i18n'
+    VERSION: TAnyStr = 'VERSION'
 
 
 class ConfigReader:
-    FILE_READER = YAMLFileReader
+    FILE_READER: TFileReader = YAMLFileReader
 
     def __init__(self):
-        self.data = dict()
-        self._aiogram = dict()
-        self._logging = dict()
-        self._i18n = dict()
+        self.data: TDict = dict()
+        self._logging: TDict = dict()
+        self._i18n: TDataClass = None
+        self._aiogram: TDataClass = None
 
-    def setup(self):
+    def setup(self) -> TConfigReader:
         """
         Настройка и чтения файла конфигурации.
 
@@ -45,7 +55,7 @@ class ConfigReader:
         self.data = file_reader.setup().read()
         return self
 
-    def _read_section(self, section_name, env_merge=False):
+    def _read_section(self, section_name: TAnyStr, env_merge: TBool = False):
         """
         Читает секцию с переменными.
 
@@ -72,7 +82,7 @@ class ConfigReader:
                 section[variable] = value
         return section
 
-    def version(self):
+    def version(self) -> TAnyStr:
         """
         Версия файла конфигурации.
         1.2.3
@@ -85,11 +95,11 @@ class ConfigReader:
         return self.data[ConfigSections.VERSION]
 
     @staticmethod
-    def _section_how_dataclass(cls_name, fields):
+    def _section_how_dataclass(cls_name: TAnyStr, fields) -> TDataClass:
         cls = make_dataclass(cls_name, fields=fields, eq=False)
         return cls(**fields)
 
-    def aiogram(self):
+    def aiogram(self) -> TDataClass:
         """
         Отдаем `dataclass`, а не словарь, так как
         получившийся код будет чище, в разделе
@@ -106,7 +116,7 @@ class ConfigReader:
 
         return self._aiogram
 
-    def logging(self):
+    def logging(self) -> TDict:
         """
         Отдаем сразу словарь, так как интерфейс
         библиотеки `logging` позволяет настройку
@@ -121,7 +131,7 @@ class ConfigReader:
             )
         return self._logging
 
-    def i18n(self):
+    def i18n(self) -> TDataClass:
         """
         Отдаем `dataclass`, а не словарь, так как
         получившийся код будет чище, в разделе настройки

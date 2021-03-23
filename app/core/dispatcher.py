@@ -1,9 +1,17 @@
 # coding: utf8
+from __future__ import annotations
+from typing import TYPE_CHECKING
 
 from app.core import stations
 from logging import getLogger
 from app.core.train import Train
 from app.ui.i18n import I18N
+
+if TYPE_CHECKING:
+    from app.typehint import TDict
+    from app.typehint import TTrain
+    from app.typehint import TStations
+    from app.typehint import TAnyStr
 
 
 logger = getLogger('app.core.dispatcher')
@@ -20,26 +28,23 @@ class BaseItinerary:
     Принцип паттерна `Цепочка обязанностей`.
     """
 
-    default_locale = i18n.ctx_locale.get()
+    default_locale: TAnyStr = i18n.ctx_locale.get()
 
     @classmethod
-    def prepare_train(cls, user_info):
+    def prepare_train(cls, user_info: TDict) -> TTrain:
         train = Train(
             unique_id=user_info['unique_id'],
             chat_id=user_info['chat_id'],
             destination=str(cls),
             storage={
-                'user_info': {
-                    'locale': user_info['locale'],
-                    'chat_id': user_info['chat_id']
-                }
+                'user_info': user_info
             }
         )
         logger.debug(f'train: {train}')
         return train
 
     @classmethod
-    async def on_itinerary(cls, user_info):
+    async def on_itinerary(cls, user_info: TDict) -> TTrain:
         train = cls.prepare_train(user_info)
 
         await cls.traveling(train)
@@ -48,13 +53,13 @@ class BaseItinerary:
         return train
 
     @classmethod
-    async def travel_is_fail(cls, train):
+    async def travel_is_fail(cls, train: TTrain):
         train.answers.clear()
         train.has_fail = False
         await stations.UISystemExceptionSt.stopover(train)
 
     @classmethod
-    async def traveling(cls, train):
+    async def traveling(cls, train: TTrain):
         """
         Тут только логика обхода.
 
@@ -70,13 +75,13 @@ class BaseItinerary:
                 return
 
     @classmethod
-    def stations(cls):
+    def stations(cls) -> TStations:
         raise NotImplementedError()
 
 
 class SystemException(BaseItinerary):
     @classmethod
-    def stations(cls):
+    def stations(cls) -> TStations:
         return [
             stations.BeginSt,
             stations.NewUserSt,
@@ -87,7 +92,7 @@ class SystemException(BaseItinerary):
 
 class CmdStart(BaseItinerary):
     @classmethod
-    def stations(cls):
+    def stations(cls) -> TStations:
         return [
             stations.BeginSt,
             stations.NewUserSt,

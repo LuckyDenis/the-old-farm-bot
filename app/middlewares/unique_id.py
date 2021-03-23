@@ -1,8 +1,12 @@
 # coding: utf8
-
-from aiogram import types as t
+from __future__ import annotations
+from typing import TYPE_CHECKING
 from aiogram.dispatcher.middlewares import BaseMiddleware
 
+if TYPE_CHECKING:
+    from app.typehint import TMessage
+    from app.typehint import TDict
+    from app.typehint import TAnyStr
 
 __all__ = ["UniqueIdMiddleware"]
 
@@ -11,9 +15,9 @@ class UniqueIdMiddleware(BaseMiddleware):
     def __init__(self):
         super(UniqueIdMiddleware, self).__init__()
 
-    async def on_process_message(self, message: t.Message, data):
+    async def on_process_message(self, message: TMessage, data: TDict):
         data['unique_id'] = self.make(message)
 
     @staticmethod
-    def make(message: t.Message):
+    def make(message: TMessage) -> TAnyStr:
         return f'{message.chat.id}-{message.message_id}'

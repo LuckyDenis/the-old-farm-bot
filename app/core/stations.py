@@ -1,7 +1,13 @@
 # coding: utf8
+from __future__ import annotations
+from typing import TYPE_CHECKING
 
 from logging import getLogger
 from app.ui import interface as ui
+
+if TYPE_CHECKING:
+    from app.typehint import TTrain
+
 
 logger = getLogger('app.core.station')
 
@@ -17,7 +23,7 @@ class BaseStation:
     """
 
     @classmethod
-    async def stopover(cls, train):
+    async def stopover(cls, train: TTrain):
         """
         Точка входа, если при обработке запроса
         что-то где-то сломается, то сообщаем модулю
@@ -36,31 +42,31 @@ class BaseStation:
             logger.error(f'error: {e}, cls: {cls}, train: {train}')
 
     @classmethod
-    async def _stopover(cls, train):
+    async def _stopover(cls, train: TTrain):
         raise NotImplementedError()
 
 
 class BeginSt(BaseStation):
     @classmethod
-    async def _stopover(cls, train):
+    async def _stopover(cls, train: TTrain):
         pass
 
 
 class FinishSt(BaseStation):
     @classmethod
-    async def _stopover(cls, train):
+    async def _stopover(cls, train: TTrain):
         pass
 
 
 class NewUserSt(BaseStation):
     @classmethod
-    async def _stopover(cls, train):
+    async def _stopover(cls, train: TTrain):
         pass
 
 
 class UISystemExceptionSt(BaseStation):
     @classmethod
-    async def _stopover(cls, train):
+    async def _stopover(cls, train: TTrain):
         answer_info = {
             'unique_id': train.unique_id,
             'locale': train.storage['user_info']['locale'],
@@ -71,7 +77,7 @@ class UISystemExceptionSt(BaseStation):
 
 class UINewUserSt(BaseStation):
     @classmethod
-    async def _stopover(cls, train):
+    async def _stopover(cls, train: TTrain):
         answer_info = {
             'unique_id': train.unique_id,
             'locale': train.storage['user_info']['locale'],

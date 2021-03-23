@@ -1,4 +1,6 @@
 # coding: utf8
+from __future__ import annotations
+from typing import TYPE_CHECKING
 
 from logging import getLogger
 
@@ -6,13 +8,18 @@ import app.ui.keyboards as k7s
 import app.ui.templates as t7s
 from app.ui.answer import AnswerWithText
 
+if TYPE_CHECKING:
+    from app.typehint import TTrain
+    from app.typehint import TDict
+    from app.typehint import TAnswer
+
 
 logger = getLogger('app.ui.interface')
 
 
 class BaseInterface:
     @classmethod
-    def generate(cls, answer_info, train):
+    def generate(cls, answer_info: TDict, train: TTrain):
         logger.debug(f'answer_info: {answer_info}, train: {train}')
         try:
             train.answers.append(
@@ -26,13 +33,13 @@ class BaseInterface:
                 f'error: {e}, answer_info: {answer_info}, train: {train}')
 
     @classmethod
-    def _generate(cls, answer_info):
+    def _generate(cls, answer_info: TDict) -> TAnswer:
         raise NotImplementedError()
 
 
 class SystemException(BaseInterface):
     @classmethod
-    def _generate(cls, answer_info):
+    def _generate(cls, answer_info: TDict) -> TAnswer:
         state = {
             'unique_id': answer_info['unique_id'],
             'locale': answer_info['locale']
@@ -52,7 +59,7 @@ class SystemException(BaseInterface):
 # ---------- cmd: start ---------- #
 class NewUser(BaseInterface):
     @classmethod
-    def _generate(cls, answer_info):
+    def _generate(cls, answer_info: TDict) -> TAnswer:
         state = {
             'unique_id': answer_info['unique_id'],
             'locale': answer_info['locale']

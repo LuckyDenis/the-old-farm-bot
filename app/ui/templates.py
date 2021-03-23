@@ -1,7 +1,15 @@
 # coding: utf8
+from __future__ import annotations
+from typing import TYPE_CHECKING
 from logging import getLogger
 from app.ui.i18n import I18N
 from app.ui.utils import emojize
+
+
+if TYPE_CHECKING:
+    from app.typehint import TDict
+    from app.typehint import TAnyStr
+
 
 logger = getLogger('app.ui.templates')
 
@@ -12,7 +20,9 @@ _ = i18n.gettext_lazy
 
 class BaseTemplate:
     @classmethod
-    def rendering(cls, state=None):
+    def rendering(cls, state: TDict = None) -> TAnyStr:
+        state = state or dict()
+
         logger.debug(f'state: {state}, '
                      f'locale: {i18n.ctx_locale.get()}')
         try:
@@ -25,13 +35,13 @@ class BaseTemplate:
                 f'state: {state}')
 
     @classmethod
-    def _rendering(cls, state=None):
+    def _rendering(cls, state: TDict):
         raise NotImplementedError()
 
 
 class SystemException(BaseTemplate):
     @classmethod
-    def _rendering(cls, state=None):
+    def _rendering(cls, state: TDict) -> TAnyStr:
         format_data = {
             **state
         }
@@ -45,7 +55,7 @@ class SystemException(BaseTemplate):
 # ---------- cmd: start ---------- #
 class NewUser(BaseTemplate):
     @classmethod
-    def _rendering(cls, state=None):
+    def _rendering(cls, state: TDict) -> TAnyStr:
         format_data = {
             **state
         }

@@ -1,13 +1,13 @@
 # coding: utf8
 """
 Шаг 1: Извлекаем текст
-    $ pybabel extract --input-dirs=./app/ui -o locales/app.pot
+    $ pybabel extract --input-dirs=./app/ui/locales -o ./app/ui/locales/app.pot
 
     Опции:
      * Извлечение текстов с поддержкой плюрализации
      -k __:1,2
 
-     *  Добавить комментарии для переводчиков
+     * Добавить комментарии для переводчиков
      -add-comments=Note
 
      * Установить имя проекта
@@ -17,26 +17,27 @@
      --version=1.2
 
 Шаг 2: Создание *.po файлов. Например для en, ru языков
-    $ pybabel init -i locales/app.pot -d locales -D app -l en
-    $ pybabel init -i locales/app.pot -d locales -D app -l ru
+    $ pybabel init -i ./app/ui/locales/app.pot -d locales -D app -l en
+    $ pybabel init -i ./app/ui/locales/app.pot -d locales -D app -l ru
 
 Шаг 3: Перевести тексты расположенные в locales/{language}/LC_MESSAGES/app.po
 
 Шаг 4: Компилируем перевод
-    $ pybabel compile -d locales -D app
+    $ pybabel compile -d ./app/ui/locales -D app
 
-Шаг 5: При внесения изменений кода, нужно обновить файлы *.po и *.mo.
+Шаг 5: При внесении изменений кода, нужно обновить файлы *.po и *.mo.
     Шаг 5.1: регенерировать файл *.pot:
         Шаг 1
     Шаг 5.2: Обновить *.po файлы
-        $ pybabel update -d locales -D app -i locales/app.pot
+        $ pybabel update -d ./app/ui/locales -D app -i ./app/ui/locales/app.pot
     Шаг 5.3: Обновить перевод
         расположение вы знаете из шага 3
     Шаг 5.4: Скомпилировать *.mo файлы
         Шаг 4
 
-TODO: Перенести логику в makefile
 """
+from __future__ import annotations
+from typing import TYPE_CHECKING
 
 from logging import getLogger
 import gettext
@@ -44,6 +45,12 @@ import os
 from contextvars import ContextVar
 
 from babel.support import LazyProxy
+
+if TYPE_CHECKING:
+    from app.typehint import TContextVar
+    from app.typehint import TAnyStr
+    from app.typehint import TI18N
+    from app.typehint import TDict
 
 
 logger = getLogger('app.ui.i18n')
@@ -58,9 +65,9 @@ class I18NMeta(type):
     `app.setup`, и не импортировать на
     прямую в модуль `ConfigReader`.
     """
-    instance = None
+    instance: TI18N = None
 
-    def __call__(cls, *args, **kwargs):
+    def __call__(cls, *args, **kwargs) -> TI18N:
         if not cls.instance:
             instance = super().__call__(*args, **kwargs)
             cls.instance = instance
@@ -68,7 +75,7 @@ class I18NMeta(type):
 
 
 class I18N(metaclass=I18NMeta):
-    ctx_locale = ContextVar(
+    ctx_locale: TContextVar = ContextVar(
         'ctx_user_locale', default='en')
 
     def __init__(self, path=None, domain=None, default_locale=None):
@@ -85,7 +92,7 @@ class I18N(metaclass=I18NMeta):
         return self
 
     @classmethod
-    def _set_default_local(cls, default_local):
+    def _set_default_local(cls, default_local: TAnyStr):
         """
         Устанавливает глобальное значение языка.
         :param default_local: str
@@ -95,7 +102,7 @@ class I18N(metaclass=I18NMeta):
     def reload(self):
         self.locales = self.find_locales()
 
-    def set_locale(self, language):
+    def set_locale(self, language: TAnyStr):
         """
         Устанавливает для конкретного пользователя
         значения языка.
@@ -104,7 +111,7 @@ class I18N(metaclass=I18NMeta):
         """
         self.ctx_locale.set(language)
 
-    def find_locales(self):
+    def find_locales(self) -> TDict:
         translations = dict()
 
         for name in os.listdir(self.path):
@@ -148,7 +155,7 @@ class I18N(metaclass=I18NMeta):
             self.gettext, singular, plural, n,
             locale, enable_cache=enable_cache)
 
-    def __call__(self, singular, plural=None, n=1, locale=None):
+    def __call__(self, singular, plural=None, n=1, locale=None) -> TAnyStr:
         logger.debug(
             f'(singular: {singular}, plural: {plural}, n: {n}, locale: {locale})')
         return self.gettext(singular, plural, n, locale)

@@ -1,8 +1,12 @@
 SHELL := /bin/bash
 CMD_INSTALL := pip install -r
 PYTHON := ./venv/bin/python
+LOAD_ENV_FILE := export $(shell sed 's/===*//'g .env);
+
+include .env
 
 run:
+	$(LOAD_ENV_FILE) \
 	export PYTHONPATH=./app:$$PYTHONPATH; \
 	export ENV=develop; \
 	export CONFIG_PATH=./etc/app/app.yaml; \

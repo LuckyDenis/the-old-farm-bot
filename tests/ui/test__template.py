@@ -8,7 +8,7 @@ from app.ui import templates as t
 class TestBaseTemplate:
     def test__sub_rendering(self):
         with pytest.raises(NotImplementedError):
-            t.BaseTemplate._rendering()
+            t.BaseTemplate._rendering({})
 
     def test__rendering_not_locale(self, monkeypatch):
         logger_error_msg = [False]
