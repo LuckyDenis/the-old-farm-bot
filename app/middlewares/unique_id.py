@@ -16,8 +16,8 @@ class UniqueIdMiddleware(BaseMiddleware):
         super(UniqueIdMiddleware, self).__init__()
 
     async def on_process_message(self, message: TMessage, data: TDict):
-        data['unique_id'] = self.make(message)
+        data['unique_id'] = self._make(message)
 
     @staticmethod
-    def make(message: TMessage) -> TAnyStr:
+    def _make(message: TMessage) -> TAnyStr:
         return f'{message.chat.id}-{message.message_id}'

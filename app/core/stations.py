@@ -25,7 +25,9 @@ class BaseStation:
     @classmethod
     async def stopover(cls, train: TTrain):
         """
-        Точка входа, если при обработке запроса
+        Точка входа.
+
+        Если при обработке запроса
         что-то где-то сломается, то сообщаем модулю
         выше, и уже выше стоящий модуль решает,
         как разобраться с возникшей ситуацией.
@@ -34,12 +36,12 @@ class BaseStation:
 
         :param train: app.core.train
         """
-        train.visited.append(cls)
+        train.visited.append(cls.__name__)
         try:
             await cls._stopover(train)
         except (KeyError, ValueError) as e:
             train.has_fail = True
-            logger.error(f'error: {e}, cls: {cls}, train: {train}')
+            logger.error(f'error: {e}, cls: {cls.__name__}, train: {train}')
 
     @classmethod
     async def _stopover(cls, train: TTrain):

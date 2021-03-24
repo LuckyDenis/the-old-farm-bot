@@ -24,7 +24,7 @@ class TestBaseInterface:
             lambda *_: answer
         )
 
-        ui.BaseInterface.generate({}, train)
+        ui.BaseInterface.generate({'locale': 'en'}, train)
         assert len(train.answers) == 1
         assert train.answers[-1] == answer
 
@@ -44,13 +44,13 @@ class TestBaseInterface:
             logger_error_hdl
         )
 
-        ui.BaseInterface.generate({}, train)
+        ui.BaseInterface.generate({'locale': 'en'}, train)
         assert train.has_fail is True
         assert logger_error_msg[0] is True
 
     def test__sub_generate(self, train):
         with pytest.raises(NotImplementedError):
-            ui.BaseInterface.generate({}, train)
+            ui.BaseInterface.generate({'locale': 'en'}, train)
 
 
 @pytest.mark.skip(reason='Еще не реализован шаблон.')
