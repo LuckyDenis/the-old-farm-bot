@@ -9,7 +9,7 @@ from app.configure.utils import get_from_environ
 
 
 if TYPE_CHECKING:
-    from app.typehint import TDict, TOptionAnyStr, TFileReader
+    from app.typehint import TDict, TAnyStr, TFileReader
 
 
 class BaseFileReader:
@@ -33,8 +33,8 @@ class BaseFileReader:
     DEFAULT_CONFIG_NAME = 'app.yaml'
 
     def __init__(self):
-        self.config_path: TOptionAnyStr = None
-        self.environment: TOptionAnyStr = None
+        self.config_path: TAnyStr = ''
+        self.environment: TAnyStr = ''
 
     def setup(self) -> TFileReader:
         """

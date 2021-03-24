@@ -55,10 +55,12 @@ class TestConfigSections:
 @pytest.mark.unit
 class TestConfigReader:
     def test__file_reader_sub_cls_base_file_reader(self):
-        assert isinstance(ConfigReader.FILE_READER(), BaseFileReader)
+        # bug: https://youtrack.jetbrains.com/issue/PY-43688
+        assert issubclass(ConfigReader.FILE_READER, BaseFileReader)
 
     def test__file_reader_is_default(self):
-        assert isinstance(ConfigReader.FILE_READER(), YAMLFileReader)
+        # bug: https://youtrack.jetbrains.com/issue/PY-43688
+        assert issubclass(ConfigReader.FILE_READER, YAMLFileReader)
 
     def test__setup_return_self(self):
         config_reader = ConfigReader()

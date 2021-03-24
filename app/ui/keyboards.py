@@ -1,5 +1,6 @@
 # coding: utf8
-from dataclasses import dataclass
+from __future__ import annotations
+from typing import TYPE_CHECKING
 
 from aiogram.types import KeyboardButton
 from aiogram.types import ReplyKeyboardMarkup
@@ -9,21 +10,30 @@ from app.ui.i18n import I18N
 from app.ui.commands import Commands
 
 
+if TYPE_CHECKING:
+    from app.typehint import TKeyboard
+
+
 i18n = I18N()
 _ = i18n.gettext_lazy
 
 
-@dataclass()
 class BaseKeyboard:
-    keyboard: (ReplyKeyboardRemove, ReplyKeyboardMarkup) = ReplyKeyboardRemove()
+    @classmethod
+    def keyboard(cls) -> TKeyboard:
+        raise NotImplementedError()
 
 
 class Remove(BaseKeyboard):
-    keyboard = ReplyKeyboardRemove()
+    @classmethod
+    def keyboard(cls) -> TKeyboard:
+        return ReplyKeyboardRemove()
 
 
 class SystemException(BaseKeyboard):
-    keyboard = ReplyKeyboardMarkup(
+    @classmethod
+    def keyboard(cls) -> TKeyboard:
+        return ReplyKeyboardMarkup(
             resize_keyboard=True,
             one_time_keyboard=False
         ).row(
@@ -35,7 +45,9 @@ class SystemException(BaseKeyboard):
 
 # ----------- cmd: start ---------- #
 class NewUser(BaseKeyboard):
-    keyboard = ReplyKeyboardMarkup(
+    @classmethod
+    def keyboard(cls) -> TKeyboard:
+        return ReplyKeyboardMarkup(
             resize_keyboard=True,
             one_time_keyboard=False
         ).row(

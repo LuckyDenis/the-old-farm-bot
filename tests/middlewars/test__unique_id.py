@@ -27,7 +27,7 @@ class TestUniqueId:
 
     def test__make_unique_id(self):
         mid_unique_id = UniqueIdMiddleware()
-        unique_id = mid_unique_id.make(message)
+        unique_id = mid_unique_id._make(message)
         assert unique_id == TEMPLATE_UNIQUE_ID
 
     async def test__on_process_message(self):

@@ -28,10 +28,10 @@ def train():
 class TestBaseItinerary:
     async def test__stations(self):
         with pytest.raises(NotImplementedError):
-            dp.BaseItinerary.stations()
+            dp.BaseItinerary._stations()
 
     def test__prepare_train(self):
-        train = dp.BaseItinerary.prepare_train(USER_INFO)
+        train = dp.BaseItinerary._prepare_train(USER_INFO)
         assert train.unique_id == UNIQUE_ID
         assert train.chat_id == CHAT_ID
         assert train.storage.get('user_info', False)
@@ -53,7 +53,7 @@ class TestBaseItinerary:
             dp.stations.BaseStation,
             'stopover', stopover
         )
-        await dp.BaseItinerary.travel_is_fail(train)
+        await dp.BaseItinerary._travel_is_fail(train)
 
         assert train.answers[-1] == answer
         assert train.has_fail is False
@@ -67,13 +67,13 @@ class TestBaseItinerary:
             'stopover', stopover
         )
         monkeypatch.setattr(
-            dp.BaseItinerary, 'stations',
+            dp.BaseItinerary, '_stations',
             lambda *_: [
                 dp.stations.BaseStation,
                 dp.stations.BaseStation
             ]
         )
-        await dp.BaseItinerary.traveling(train)
+        await dp.BaseItinerary._traveling(train)
 
         assert train.has_fail is False
         assert len(train.visited) == 2
@@ -88,45 +88,45 @@ class TestBaseItinerary:
             'stopover', stopover
         )
         monkeypatch.setattr(
-            dp.BaseItinerary, 'stations',
+            dp.BaseItinerary, '_stations',
             lambda *_: [
                 dp.stations.BaseStation,
                 dp.stations.BaseStation
             ]
         )
-        await dp.BaseItinerary.traveling(train)
+        await dp.BaseItinerary._traveling(train)
 
         assert train.has_fail is True
         assert len(train.visited) == 1
 
     async def test__on_itinerary_correct(self, monkeypatch):
-        async def traveling(tr):
+        async def _traveling(tr):
             tr.visited.append('foo')
 
         monkeypatch.setattr(
-            dp.BaseItinerary, 'traveling',
-            traveling
+            dp.BaseItinerary, '_traveling',
+            _traveling
         )
         train = await dp.BaseItinerary.on_itinerary(USER_INFO)
         assert len(train.visited) == 1
         assert len(train.answers) == 0
 
     async def test__on_itinerary_with_error(self, monkeypatch):
-        async def traveling(tr):
+        async def _traveling(tr):
             tr.visited.append('foo')
             tr.has_fail = True
 
         monkeypatch.setattr(
-            dp.BaseItinerary, 'traveling',
-            traveling
+            dp.BaseItinerary, '_traveling',
+            _traveling
         )
 
-        async def travel_is_fail(tr):
+        async def _travel_is_fail(tr):
             tr.answers.append('foo')
 
         monkeypatch.setattr(
-            dp.BaseItinerary, 'travel_is_fail',
-            travel_is_fail
+            dp.BaseItinerary, '_travel_is_fail',
+            _travel_is_fail
         )
 
         train = await dp.BaseItinerary.on_itinerary(USER_INFO)

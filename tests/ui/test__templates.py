@@ -10,7 +10,7 @@ class TestBaseTemplate:
         with pytest.raises(NotImplementedError):
             t.BaseTemplate._rendering({})
 
-    def test__rendering_not_locale(self, monkeypatch):
+    def test__rendering_with_error(self, monkeypatch):
         logger_error_msg = [False]
 
         def check_logger_msg(*_):
@@ -20,6 +20,15 @@ class TestBaseTemplate:
             t.logger, 'error',
             check_logger_msg
         )
+
+        def _rendering(*_, **__):
+            raise KeyError()
+
+        monkeypatch.setattr(
+            t.BaseTemplate, '_rendering',
+            _rendering
+        )
+
         t.BaseTemplate.rendering(state={})
         assert logger_error_msg[0] is True
 

@@ -19,14 +19,21 @@ _ = i18n.gettext_lazy
 
 
 class BaseTemplate:
+    """
+    Интерфейс для классов которые создают текст ответа.
+    """
     @classmethod
     def rendering(cls, state: TDict = None) -> TAnyStr:
+        """
+        Точка входа.
+        :param state: dict; None -> dict
+        :return: str
+        """
         state = state or dict()
 
         logger.debug(f'state: {state}, '
                      f'locale: {i18n.ctx_locale.get()}')
         try:
-            i18n.set_locale(state['locale'])
             return cls._rendering(state=state)
         except KeyError as e:
             logger.error(

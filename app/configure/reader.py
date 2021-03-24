@@ -47,12 +47,13 @@ class ConfigReader:
 
         :return: ConfigReader
         """
-        file_reader = self.FILE_READER()
-        if not isinstance(file_reader, BaseFileReader):
+        file_reader = self.FILE_READER
+        # bug: https://youtrack.jetbrains.com/issue/PY-43688
+        if not issubclass(file_reader, BaseFileReader):
             raise TypeError(f'config_reader.FILE_READER={type(file_reader)} '
                             f'не является типом {BaseFileReader}')
 
-        self.data = file_reader.setup().read()
+        self.data = file_reader().setup().read()
         return self
 
     def _read_section(self, section_name: TAnyStr, env_merge: TBool = False):

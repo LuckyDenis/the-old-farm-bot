@@ -20,6 +20,8 @@ i18n = I18N()
 
 class BaseItinerary:
     """
+    Интерфейс для класса пути.
+
     Так как при обработке команд от пользователя,
     операции над данными могут часто повторяться,
     что бы не копировать эту логику, выделим её в
@@ -28,10 +30,22 @@ class BaseItinerary:
     Принцип паттерна `Цепочка обязанностей`.
     """
 
-    default_locale: TAnyStr = i18n.ctx_locale.get()
+    _default_locale: TAnyStr = i18n.ctx_locale.get()
 
     @classmethod
-    def prepare_train(cls, user_info: TDict) -> TTrain:
+    def _prepare_train(cls, user_info: TDict) -> TTrain:
+        """
+        Создание контейнера для данных.
+
+        Устанавливаем `locale` - пользователя или
+        по умолчанию в системе.
+
+        :param user_info: dict
+        :return: app.core.train
+        """
+        user_info['locale'] = user_info.get(
+            'locale', cls._default_locale)
+
         train = Train(
             unique_id=user_info['unique_id'],
             chat_id=user_info['chat_id'],
@@ -40,26 +54,33 @@ class BaseItinerary:
                 'user_info': user_info
             }
         )
+
         logger.debug(f'train: {train}')
         return train
 
     @classmethod
     async def on_itinerary(cls, user_info: TDict) -> TTrain:
-        train = cls.prepare_train(user_info)
+        """
+        Точка входа.
 
-        await cls.traveling(train)
+        :param user_info: dict
+        :return: app.core.train
+        """
+        train = cls._prepare_train(user_info)
+
+        await cls._traveling(train)
         if train.has_fail:
-            await cls.travel_is_fail(train)
+            await cls._travel_is_fail(train)
         return train
 
     @classmethod
-    async def travel_is_fail(cls, train: TTrain):
+    async def _travel_is_fail(cls, train: TTrain):
         train.answers.clear()
         train.has_fail = False
         await stations.UISystemExceptionSt.stopover(train)
 
     @classmethod
-    async def traveling(cls, train: TTrain):
+    async def _traveling(cls, train: TTrain):
         """
         Тут только логика обхода.
 
@@ -69,19 +90,19 @@ class BaseItinerary:
 
         :param train: app.core.train
         """
-        for station in cls.stations():
+        for station in cls._stations():
             await station.stopover(train)
             if train.has_fail:
                 return
 
     @classmethod
-    def stations(cls) -> TStations:
+    def _stations(cls) -> TStations:
         raise NotImplementedError()
 
 
 class SystemException(BaseItinerary):
     @classmethod
-    def stations(cls) -> TStations:
+    def _stations(cls) -> TStations:
         return [
             stations.BeginSt,
             stations.NewUserSt,
@@ -92,7 +113,7 @@ class SystemException(BaseItinerary):
 
 class CmdStart(BaseItinerary):
     @classmethod
-    def stations(cls) -> TStations:
+    def _stations(cls) -> TStations:
         return [
             stations.BeginSt,
             stations.NewUserSt,
