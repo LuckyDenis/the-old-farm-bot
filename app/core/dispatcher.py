@@ -43,8 +43,7 @@ class BaseItinerary:
         :param user_info: dict
         :return: app.core.train
         """
-        user_info['locale'] = user_info.get(
-            'locale', cls._default_locale)
+        user_info.setdefault('locale', cls._default_locale)
 
         train = Train(
             unique_id=user_info['unique_id'],

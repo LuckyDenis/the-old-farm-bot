@@ -38,10 +38,16 @@ class BaseStation:
         """
         train.visited.append(cls.__name__)
         try:
+            cls._check_fields(train)
             await cls._stopover(train)
         except (KeyError, ValueError) as e:
             train.has_fail = True
             logger.error(f'error: {e}, cls: {cls.__name__}, train: {train}')
+
+    @classmethod
+    def _check_fields(cls, train: TTrain):
+        # TODO: Реализовать, на подобии cls._stopover()
+        pass
 
     @classmethod
     async def _stopover(cls, train: TTrain):
