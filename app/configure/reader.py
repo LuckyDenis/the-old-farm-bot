@@ -49,7 +49,7 @@ class ConfigReader:
         """
         file_reader = self.FILE_READER
         # bug: https://youtrack.jetbrains.com/issue/PY-43688
-        if not issubclass(file_reader, BaseFileReader):
+        if not issubclass(file_reader, BaseFileReader):  # noqa
             raise TypeError(f'config_reader.FILE_READER={type(file_reader)} '
                             f'не является типом {BaseFileReader}')
 

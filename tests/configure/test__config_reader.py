@@ -56,11 +56,11 @@ class TestConfigSections:
 class TestConfigReader:
     def test__file_reader_sub_cls_base_file_reader(self):
         # bug: https://youtrack.jetbrains.com/issue/PY-43688
-        assert issubclass(ConfigReader.FILE_READER, BaseFileReader)
+        assert issubclass(ConfigReader.FILE_READER, BaseFileReader)  # noqa
 
     def test__file_reader_is_default(self):
         # bug: https://youtrack.jetbrains.com/issue/PY-43688
-        assert issubclass(ConfigReader.FILE_READER, YAMLFileReader)
+        assert issubclass(ConfigReader.FILE_READER, YAMLFileReader)  # noqa
 
     def test__setup_return_self(self):
         config_reader = ConfigReader()
