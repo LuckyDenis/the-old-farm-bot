@@ -4,7 +4,7 @@ import emoji
 
 
 def emojize(text, use_aliases=True):
-    return emoji.emojize(str(text), use_aliases=use_aliases)
+    return emoji.emojize(text, use_aliases=use_aliases)
 
 
 def demojize(text, use_aliases=True):

@@ -57,18 +57,21 @@ class BaseStation:
 class BeginSt(BaseStation):
     @classmethod
     async def _stopover(cls, train: TTrain):
+        # TODO: Реализовать
         pass
 
 
 class FinishSt(BaseStation):
     @classmethod
     async def _stopover(cls, train: TTrain):
+        # TODO: Реализовать
         pass
 
 
 class NewUserSt(BaseStation):
     @classmethod
     async def _stopover(cls, train: TTrain):
+        # TODO: Реализовать
         pass
 
 

@@ -16,7 +16,7 @@ from app.core.train import Train
 from app.ui.answer import AnswerWithText
 from app.ui.answer import BaseAnswer
 from app.ui.i18n import I18N
-from app.ui.keyboards import BaseKeyboard
+
 
 TDict = dict
 TInt = int
@@ -39,7 +39,6 @@ TConfigReader = ConfigReader
 TI18N = I18N
 TAnswer = BaseAnswer
 TAnswerWithText = AnswerWithText
-TKeyboard = BaseKeyboard.keyboard
 
 TTrain = Train
 TVisited = List[TAnyStr]
@@ -50,23 +49,22 @@ TStations = List[Type[TStation]]
 
 
 __all__ = [
-    TTrain,
-    TAnswerWithText,
-    TFileReader,
-    TConfigReader,
-    TDict,
-    TInt,
-    TAnyStr,
-    TBool,
-    TDataClass,
-    TStation,
-    TStations,
-    TMessage,
-    TAnswers,
-    TAnswer,
-    TVisited,
-    TEnumAuto,
-    TContextVar,
-    TI18N,
-    TKeyboard
+    'TTrain',
+    'TAnswerWithText',
+    'TFileReader',
+    'TConfigReader',
+    'TDict',
+    'TInt',
+    'TAnyStr',
+    'TBool',
+    'TDataClass',
+    'TStation',
+    'TStations',
+    'TMessage',
+    'TAnswers',
+    'TAnswer',
+    'TVisited',
+    'TEnumAuto',
+    'TContextVar',
+    'TI18N'
 ]
