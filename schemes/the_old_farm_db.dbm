@@ -1,0 +1,715 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+CAUTION: Do not modify this file unless you know what you are doing.
+         Unexpected results may occur if the code is changed deliberately.
+-->
+<dbmodel pgmodeler-ver="0.9.2" last-position="0,11" last-zoom="0.65" max-obj-count="25"
+	 default-owner="postgres">
+<database name="the_old_farm_db" encoding="UTF8" is-template="false" allow-conns="true">
+	<role name="postgres"/>
+	<tablespace name="pg_default"/>
+</database>
+
+<schema name="public" layer="0" fill-color="#e1e1e1" sql-disabled="true">
+</schema>
+
+<schema name="profile" layer="0" rect-visible="true" fill-color="#89dcf3">
+	<role name="postgres"/>
+</schema>
+
+<schema name="component" layer="0" rect-visible="true" fill-color="#f8e20d">
+	<role name="postgres"/>
+</schema>
+
+<table name="item_type" layer="0" collapse-mode="2" max-obj-count="1">
+	<schema name="component"/>
+	<role name="postgres"/>
+	<position x="1780" y="100"/>
+	<column name="id" not-null="true">
+		<type name="varchar" length="16"/>
+	</column>
+	<constraint name="type_of_item_id_pk" type="pk-constr" table="component.item_type">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="object" layer="0" collapse-mode="2" max-obj-count="4">
+	<schema name="component"/>
+	<role name="postgres"/>
+	<position x="1420" y="260"/>
+	<column name="id" not-null="true">
+		<type name="varchar" length="32"/>
+	</column>
+	<column name="sell_cost" not-null="true">
+		<type name="integer" length="4"/>
+	</column>
+	<constraint name="item_id_pk" type="pk-constr" table="component.object">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="sell_cost_cannot_be_negative_ch" type="ck-constr" table="component.object">
+			<expression><![CDATA[sell_cost >= 0]]></expression>
+	</constraint>
+
+	<customidxs object-type="column">
+		<object name="sell_money" index="3"/>
+		<object name="type" index="1"/>
+	</customidxs>
+
+	<customidxs object-type="constraint">
+		<object name="sell_money_fk" index="3"/>
+		<object name="type_fk" index="2"/>
+	</customidxs>
+</table>
+
+<table name="money_type" layer="0" collapse-mode="2" max-obj-count="1">
+	<schema name="component"/>
+	<role name="postgres"/>
+	<position x="1720" y="540"/>
+	<column name="id" not-null="true">
+		<type name="varchar" length="4"/>
+		<comment><![CDATA[gem | coin]]></comment>
+	</column>
+	<constraint name="type_of_money_id_pk" type="pk-constr" table="component.money_type">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<schema name="shop" layer="0" rect-visible="true" fill-color="#38e70c">
+	<role name="postgres"/>
+</schema>
+
+<table name="showcase" layer="0" collapse-mode="2" max-obj-count="9">
+	<schema name="shop"/>
+	<role name="postgres"/>
+	<position x="2100" y="940"/>
+	<column name="quantity" not-null="true">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="buy_cost" not-null="true">
+		<type name="integer" length="0"/>
+	</column>
+	<constraint name="showecase_quantity_ch" type="ck-constr" table="shop.showcase">
+			<expression><![CDATA[quantity >0]]></expression>
+	</constraint>
+	<constraint name="showecase_buy_cost_ch" type="ck-constr" table="shop.showcase">
+			<expression><![CDATA[buy_cost >= 0]]></expression>
+	</constraint>
+	<constraint name="quantity_greater_than_zero_ch" type="ck-constr" table="shop.showcase">
+			<expression><![CDATA[quantity > 0]]></expression>
+	</constraint>
+	<constraint name="buy_cost_cannot_be_negative_ch" type="ck-constr" table="shop.showcase">
+			<expression><![CDATA[buy_cost >= 0]]></expression>
+	</constraint>
+
+	<customidxs object-type="column">
+		<object name="buy_money" index="3"/>
+		<object name="id_object" index="0"/>
+	</customidxs>
+
+	<customidxs object-type="constraint">
+		<object name="buy_mony_fk" index="7"/>
+		<object name="object_fk" index="6"/>
+		<object name="showcase_pk" index="2"/>
+		<object name="showcase_uq" index="4"/>
+	</customidxs>
+</table>
+
+<table name="gamer" layer="0" collapse-mode="2" max-obj-count="8">
+	<schema name="profile"/>
+	<role name="postgres"/>
+	<position x="140" y="340"/>
+	<column name="id" not-null="true">
+		<type name="bigint" length="0"/>
+		<comment><![CDATA[Телеграм id пользователя]]></comment>
+	</column>
+	<column name="username">
+		<type name="varchar" length="32"/>
+		<comment><![CDATA[Телеграм имя пользователя]]></comment>
+	</column>
+	<column name="is_accept_terms" not-null="true" default-value="false">
+		<type name="bool" length="0"/>
+		<comment><![CDATA[Принятие пользовательского соглашения]]></comment>
+	</column>
+	<column name="is_blocked" not-null="true" default-value="false">
+		<type name="bool" length="0"/>
+		<comment><![CDATA[Блокировка пользователя в боте]]></comment>
+	</column>
+	<column name="is_tester" not-null="true" default-value="false">
+		<type name="bool" length="0"/>
+		<comment><![CDATA[Имеет доступ к тестовым функциям]]></comment>
+	</column>
+	<column name="registered" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="last_visited" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<constraint name="profile_id_pk" type="pk-constr" table="profile.gamer">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="profile_username_uq" type="uq-constr" table="profile.gamer">
+		<columns names="username" ref-type="src-columns"/>
+		<comment><![CDATA[Короткое телеграм имя, может быть у одного пользователя. Если нам пришел пользователь с username, а такой username уже есть - то удаляем старый и записываем новый пользователю.]]></comment>
+	</constraint>
+</table>
+
+<index name="profile_id_idx" table="profile.gamer"
+	 concurrent="false" unique="false" fast-update="false" buffering="false"
+	 index-type="btree" factor="0">
+		<idxelement use-sorting="false">
+			<column name="id"/>
+		</idxelement>
+</index>
+
+<index name="profile_username_idx" table="profile.gamer"
+	 concurrent="false" unique="false" fast-update="false" buffering="false"
+	 index-type="btree" factor="0">
+		<idxelement use-sorting="false">
+			<column name="username"/>
+		</idxelement>
+</index>
+
+<table name="purse" layer="0" collapse-mode="2" max-obj-count="4">
+	<schema name="profile"/>
+	<role name="postgres"/>
+	<position x="560" y="40"/>
+	<column name="coins" not-null="true">
+		<type name="bigint" length="0"/>
+	</column>
+	<column name="gems" not-null="true">
+		<type name="bigint" length="0"/>
+	</column>
+	<column name="invite_id" not-null="true">
+		<type name="varchar" length="32"/>
+	</column>
+	<constraint name="purse_coins_ch" type="ck-constr" table="profile.purse">
+			<expression><![CDATA[coins >= 0]]></expression>
+	</constraint>
+
+	<customidxs object-type="column">
+		<object name="id_gamer" index="0"/>
+	</customidxs>
+
+	<customidxs object-type="constraint">
+		<object name="gamer_fk" index="1"/>
+		<object name="purse_pk" index="3"/>
+		<object name="purse_uq" index="2"/>
+	</customidxs>
+</table>
+
+<relationship name="gamer_has_on_purse" type="rel11" layer="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 src-table="profile.gamer"
+	 dst-table="profile.purse"
+	 src-required="true" dst-required="false"
+	upd-action="CASCADE"
+	del-action="CASCADE">
+	<label ref-type="name-label">
+		<position x="6.72483" y="-23.4266"/>
+	</label>
+	<special-pk-cols indexes="0"/>
+</relationship>
+
+<relationship name="showcase_has_one_item" type="rel11" layer="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 src-table="component.object"
+	 dst-table="shop.showcase"
+	 src-required="true" dst-required="false"
+	upd-action="CASCADE"
+	del-action="CASCADE">
+	<special-pk-cols indexes="0"/>
+</relationship>
+
+<schema name="zone" layer="0" rect-visible="true" fill-color="#956ee8">
+	<role name="postgres"/>
+</schema>
+
+<table name="warehouse" layer="0" collapse-mode="2" max-obj-count="6">
+	<schema name="zone"/>
+	<role name="postgres"/>
+	<position x="480" y="660"/>
+	<column name="id_shelf" not-null="true">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="quantity">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="is_pick" not-null="true" default-value="false">
+		<type name="bool" length="0"/>
+	</column>
+
+	<customidxs object-type="column">
+		<object name="id_gamer" index="0"/>
+		<object name="id_object" index="2"/>
+	</customidxs>
+
+	<customidxs object-type="constraint">
+		<object name="gamer_fk" index="1"/>
+		<object name="object_fk" index="2"/>
+		<object name="warehouse_pk" index="0"/>
+	</customidxs>
+</table>
+
+<table name="field" layer="0" collapse-mode="2" pagination="true" attribs-page="0" ext-attribs-page="0" max-obj-count="8">
+	<schema name="zone"/>
+	<role name="postgres"/>
+	<position x="160" y="1020"/>
+	<column name="id_place" not-null="true">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="will_grow">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="was_fertilized" not-null="true" default-value="false">
+		<type name="bool" length="0"/>
+	</column>
+	<column name="was_weeded" not-null="true" default-value="false">
+		<type name="bool" length="0"/>
+	</column>
+	<column name="was_robbed" not-null="true" default-value="false">
+		<type name="bool" length="0"/>
+	</column>
+
+	<customidxs object-type="column">
+		<object name="id_gamer" index="0"/>
+		<object name="plant" index="2"/>
+	</customidxs>
+
+	<customidxs object-type="constraint">
+		<object name="field_pk" index="0"/>
+		<object name="gamer_fk" index="1"/>
+		<object name="plant_fk" index="2"/>
+	</customidxs>
+</table>
+
+<table name="orchard" layer="0" collapse-mode="2" pagination="true" attribs-page="0" ext-attribs-page="0" max-obj-count="9">
+	<schema name="zone"/>
+	<role name="postgres"/>
+	<position x="500" y="1080"/>
+	<column name="id_place" not-null="true">
+		<type name="smallint" length="0"/>
+	</column>
+	<column name="will_ripen">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="was_fertilized" not-null="true" default-value="false">
+		<type name="bool" length="0"/>
+	</column>
+	<column name="was_watered" not-null="true" default-value="false">
+		<type name="bool" length="0"/>
+	</column>
+	<column name="was_robbed" not-null="true" default-value="false">
+		<type name="bool" length="0"/>
+	</column>
+	<column name="is_pick" not-null="true" default-value="false">
+		<type name="bool" length="0"/>
+	</column>
+
+	<customidxs object-type="column">
+		<object name="id_gamer" index="0"/>
+		<object name="tree" index="2"/>
+	</customidxs>
+
+	<customidxs object-type="constraint">
+		<object name="gamer_fk" index="1"/>
+		<object name="orchard_pk" index="0"/>
+		<object name="tree_fk" index="2"/>
+	</customidxs>
+</table>
+
+<table name="meadow" layer="0" collapse-mode="2" pagination="true" attribs-page="0" ext-attribs-page="0" max-obj-count="9">
+	<schema name="zone"/>
+	<role name="postgres"/>
+	<position x="180" y="1280"/>
+	<column name="id_place" not-null="true">
+		<type name="smallint" length="0"/>
+	</column>
+	<column name="will_produce">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="was_given_water" not-null="true" default-value="false">
+		<type name="bool" length="0"/>
+	</column>
+	<column name="was_given_vitamins" not-null="true" default-value="false">
+		<type name="bool" length="0"/>
+	</column>
+	<column name="was_robbed" not-null="true" default-value="false">
+		<type name="bool" length="0"/>
+	</column>
+	<column name="is_pick" not-null="true" default-value="false">
+		<type name="bool" length="0"/>
+	</column>
+
+	<customidxs object-type="column">
+		<object name="animal" index="2"/>
+		<object name="id_gamer" index="0"/>
+	</customidxs>
+
+	<customidxs object-type="constraint">
+		<object name="animal_fk" index="2"/>
+		<object name="gamer_fk" index="1"/>
+		<object name="meadow_pk" index="0"/>
+	</customidxs>
+</table>
+
+<table name="choice_of_goods" layer="0" collapse-mode="2" max-obj-count="4">
+	<schema name="profile"/>
+	<role name="postgres"/>
+	<position x="700" y="240"/>
+
+	<customidxs object-type="column">
+		<object name="id_gamer" index="0"/>
+	</customidxs>
+
+	<customidxs object-type="constraint">
+		<object name="choice_of_goods_pk" index="0"/>
+		<object name="choice_of_goods_uq" index="1"/>
+		<object name="gamer_fk" index="2"/>
+	</customidxs>
+</table>
+
+<relationship name="choice_of_goods_has_one_profile" type="rel11" layer="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 src-table="profile.gamer"
+	 dst-table="profile.choice_of_goods"
+	 src-required="true" dst-required="false"
+	upd-action="CASCADE"
+	del-action="CASCADE">
+	<label ref-type="name-label">
+		<position x="12.1684" y="-17.0515"/>
+	</label>
+	<special-pk-cols indexes="0"/>
+</relationship>
+
+<table name="gifts" layer="0" collapse-mode="2" max-obj-count="4">
+	<schema name="profile"/>
+	<role name="postgres"/>
+	<position x="660" y="420"/>
+	<column name="id_shelf" not-null="true">
+		<type name="smallint" length="0"/>
+	</column>
+	<column name="quantity">
+		<type name="integer" length="0"/>
+	</column>
+
+	<customidxs object-type="column">
+		<object name="id_gamer" index="1"/>
+		<object name="id_object" index="2"/>
+	</customidxs>
+
+	<customidxs object-type="constraint">
+		<object name="gamer_fk" index="1"/>
+		<object name="gifts_pk" index="0"/>
+		<object name="object_fk" index="2"/>
+	</customidxs>
+</table>
+
+<table name="recipe" layer="0" collapse-mode="2" max-obj-count="6">
+	<schema name="component"/>
+	<role name="postgres"/>
+	<position x="2000" y="280"/>
+	<column name="quantity" not-null="true">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="creation_time" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<constraint name="quantity_greater_than_zero_ch" type="ck-constr" table="component.recipe">
+			<expression><![CDATA[quantity > 0]]></expression>
+	</constraint>
+	<constraint name="creation_time_cannot_be_negative_ch" type="ck-constr" table="component.recipe">
+			<expression><![CDATA[creation_time > to_timestamp(0)]]></expression>
+	</constraint>
+
+	<customidxs object-type="column">
+		<object name="maker" index="0"/>
+		<object name="product" index="1"/>
+	</customidxs>
+
+	<customidxs object-type="constraint">
+		<object name="maker_fk" index="3"/>
+		<object name="maker_pk" index="2"/>
+		<object name="maker_uq" index="4"/>
+	</customidxs>
+</table>
+
+<table name="choice_of_friend" layer="0" collapse-mode="2" max-obj-count="4">
+	<schema name="profile"/>
+	<role name="postgres"/>
+	<position x="260" y="40"/>
+
+	<customidxs object-type="column">
+		<object name="id_friend" index="1"/>
+		<object name="id_gamer" index="0"/>
+	</customidxs>
+
+	<customidxs object-type="constraint">
+		<object name="choice_of_friend_pk" index="0"/>
+		<object name="choice_of_friend_uq" index="2"/>
+		<object name="gamer_fk" index="1"/>
+		<object name="id_friend_fk" index="3"/>
+	</customidxs>
+</table>
+
+<relationship name="gamer_has_one_slot_for_choice_of_friend" type="rel11" layer="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 src-table="profile.gamer"
+	 dst-table="profile.choice_of_friend"
+	 src-required="true" dst-required="false"
+	upd-action="CASCADE"
+	del-action="CASCADE">
+	<label ref-type="name-label">
+		<position x="11.3009" y="-6.82656"/>
+	</label>
+	<special-pk-cols indexes="0"/>
+</relationship>
+
+<relationship name="profile_has_many_field" type="rel1n" layer="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 src-table="profile.gamer"
+	 dst-table="zone.field"
+	 src-required="true" dst-required="false"
+	upd-action="CASCADE"
+	del-action="CASCADE">
+	<constraint name="field_pk" type="pk-constr" table="zone.field">
+		<columns names="id_place" ref-type="src-columns"/>
+	</constraint>
+	<special-pk-cols indexes="0"/>
+</relationship>
+
+<relationship name="item_has_many_places_in_field" type="rel1n" layer="0"
+	 src-col-pattern="plant"
+	 pk-pattern="plant_pk" uq-pattern="plant_uq"
+	 src-fk-pattern="plant_fk"
+	 src-table="component.object"
+	 dst-table="zone.field"
+	 src-required="false" dst-required="false"
+	upd-action="CASCADE"
+	del-action="RESTRICT">
+	<label ref-type="name-label">
+		<position x="-0.783575" y="5.93894"/>
+	</label>
+</relationship>
+
+<relationship name="gamer_can_be_friend_of_many_other_gamer" type="rel1n" layer="0"
+	 src-col-pattern="id_friend"
+	 pk-pattern="id_friend_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="id_friend_fk"
+	 src-table="profile.gamer"
+	 dst-table="profile.choice_of_friend"
+	 src-required="false" dst-required="false"
+	upd-action="CASCADE">
+	<label ref-type="name-label">
+		<position x="91.0186" y="-26.8266"/>
+	</label>
+</relationship>
+
+<relationship name="choice_of_goods_have_many_objects" type="rel1n" layer="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 src-table="component.object"
+	 dst-table="profile.choice_of_goods"
+	 src-required="false" dst-required="false"
+	upd-action="CASCADE">
+	<label ref-type="name-label">
+		<position x="-3.70663" y="-4.28403"/>
+	</label>
+</relationship>
+
+<relationship name="gamer_has_many_gifts" type="rel1n" layer="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 src-table="profile.gamer"
+	 dst-table="profile.gifts"
+	 src-required="true" dst-required="false"
+	upd-action="CASCADE"
+	del-action="CASCADE">
+	<label ref-type="name-label">
+		<position x="4.16837" y="4.54308"/>
+	</label>
+	<constraint name="gifts_pk" type="pk-constr" table="profile.gifts">
+		<columns names="id_shelf" ref-type="src-columns"/>
+	</constraint>
+	<special-pk-cols indexes="0"/>
+</relationship>
+
+<relationship name="object_has_many_gifts" type="rel1n" layer="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 src-table="component.object"
+	 dst-table="profile.gifts"
+	 src-required="false" dst-required="false"
+	upd-action="CASCADE">
+	<label ref-type="name-label">
+		<position x="-3.41844" y="-4.91037"/>
+	</label>
+</relationship>
+
+<relationship name="gamer_has_many_warehouse_shelves" type="rel1n" layer="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 src-table="profile.gamer"
+	 dst-table="zone.warehouse"
+	 src-required="true" dst-required="false">
+	<constraint name="warehouse_pk" type="pk-constr" table="zone.warehouse">
+		<columns names="id_shelf" ref-type="src-columns"/>
+	</constraint>
+	<special-pk-cols indexes="0"/>
+</relationship>
+
+<relationship name="object_has_many_warehouse_shelves" type="rel1n" layer="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 src-table="component.object"
+	 dst-table="zone.warehouse"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="item_type_has_many_object" type="rel1n" layer="0"
+	 src-col-pattern="type"
+	 pk-pattern="type_pk" uq-pattern="type_uq"
+	 src-fk-pattern="type_fk"
+	 src-table="component.item_type"
+	 dst-table="component.object"
+	 src-required="true" dst-required="false"
+	upd-action="CASCADE"
+	del-action="RESTRICT"/>
+
+<relationship name="money_type_has_many_object" type="rel1n" layer="0"
+	 src-col-pattern="sell_money"
+	 pk-pattern="sell_money_pk" uq-pattern="sell_money_uq"
+	 src-fk-pattern="sell_money_fk"
+	 src-table="component.money_type"
+	 dst-table="component.object"
+	 src-required="true" dst-required="false"
+	upd-action="CASCADE"
+	del-action="RESTRICT"/>
+
+<relationship name="recipe_has_one_maker" type="rel11" layer="0"
+	 src-col-pattern="maker"
+	 pk-pattern="maker_pk" uq-pattern="maker_uq"
+	 src-fk-pattern="maker_fk"
+	 src-table="component.object"
+	 dst-table="component.recipe"
+	 src-required="false" dst-required="false"
+	upd-action="CASCADE"
+	del-action="RESTRICT">
+	<column name="product" not-null="true">
+		<type name="varchar" length="32"/>
+	</column>
+	<special-pk-cols indexes="0"/>
+</relationship>
+
+<relationship name="money_type_has_many_showcase" type="rel1n" layer="0"
+	 src-col-pattern="buy_money"
+	 pk-pattern="buy_money_pk" uq-pattern="buy_money_uq"
+	 src-fk-pattern="buy_mony_fk"
+	 src-table="component.money_type"
+	 dst-table="shop.showcase"
+	 src-required="true" dst-required="false"
+	upd-action="CASCADE"
+	del-action="RESTRICT"/>
+
+<relationship name="gamer_has_many_trees_in_orchard" type="rel1n" layer="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 src-table="profile.gamer"
+	 dst-table="zone.orchard"
+	 src-required="true" dst-required="false">
+	<label ref-type="name-label">
+		<position x="47.6211" y="46.6734"/>
+	</label>
+	<constraint name="orchard_pk" type="pk-constr" table="zone.orchard">
+		<columns names="id_place" ref-type="src-columns"/>
+	</constraint>
+	<special-pk-cols indexes="0"/>
+</relationship>
+
+<relationship name="tree_has_many_place_in_orchard" type="rel1n" layer="0"
+	 src-col-pattern="tree"
+	 pk-pattern="tree_pk" uq-pattern="tree_uq"
+	 src-fk-pattern="tree_fk"
+	 src-table="component.object"
+	 dst-table="zone.orchard"
+	 src-required="false" dst-required="false"
+	upd-action="CASCADE"
+	del-action="RESTRICT"/>
+
+<relationship name="gamer_has_many_places_in_meadow" type="rel1n" layer="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 src-table="profile.gamer"
+	 dst-table="zone.meadow"
+	 src-required="true" dst-required="false"
+	upd-action="CASCADE"
+	del-action="CASCADE">
+	<constraint name="meadow_pk" type="pk-constr" table="zone.meadow">
+		<columns names="id_place" ref-type="src-columns"/>
+	</constraint>
+	<special-pk-cols indexes="0"/>
+</relationship>
+
+<relationship name="object_has_many_places_in_meadow" type="rel1n" layer="0"
+	 src-col-pattern="animal"
+	 pk-pattern="animal_pk" uq-pattern="animal_uq"
+	 src-fk-pattern="animal_fk"
+	 src-table="component.object"
+	 dst-table="zone.meadow"
+	 src-required="false" dst-required="false"
+	upd-action="CASCADE"
+	del-action="RESTRICT"/>
+
+<table name="pet" layer="0" collapse-mode="2" max-obj-count="4">
+	<schema name="profile"/>
+	<role name="postgres"/>
+	<position x="860" y="60"/>
+	<column name="moniker">
+		<type name="varchar" length="16"/>
+	</column>
+	<column name="not_hungry_to_time" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="was grabbed" not-null="true" default-value="0">
+		<type name="integer" length="0"/>
+	</column>
+
+	<customidxs object-type="column">
+		<object name="id_gamer" index="0"/>
+	</customidxs>
+
+	<customidxs object-type="constraint">
+		<object name="gamer_fk" index="1"/>
+		<object name="pet_pk" index="0"/>
+		<object name="pet_uq" index="2"/>
+	</customidxs>
+</table>
+
+<relationship name="gamer_has_one_pet" type="rel11" layer="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 src-table="profile.gamer"
+	 dst-table="profile.pet"
+	 src-required="true" dst-required="false"
+	upd-action="CASCADE"
+	del-action="CASCADE">
+	<special-pk-cols indexes="0"/>
+</relationship>
+
+</dbmodel>
