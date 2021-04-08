@@ -58,7 +58,6 @@ test:
 	export PYTHONPATH=./app:$$PYTHONPATH; \
 	export ENV=testing; \
 	export CONFIG_PATH=./etc/app/app.yaml; \
-	rm -rf ./tests/ui/locales/en ./tests/ui/locales/ru ./tests/ui/locales/text.pot; \
 	pybabel extract --input-dirs=./tests/ui/locales -o ./tests/ui/locales/text.pot;\
 	pybabel init -i ./tests/ui/locales/text.pot -d ./tests/ui/locales -D text -l en; \
 	pybabel compile -d ./tests/ui/locales/ -D text; \
