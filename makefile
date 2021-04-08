@@ -63,8 +63,6 @@ test:
 	pybabel init -i ./tests/ui/locales/text.pot -d ./tests/ui/locales -D text -l en; \
 	pybabel compile -d ./tests/ui/locales/ -D text; \
 	pybabel init -i ./tests/ui/locales/text.pot -d ./tests/ui/locales -D text -l ru; \
+	flake8 ./app ./tests/; \
 	pytest ./; \
 	rm -rf ./tests/ui/locales/en ./tests/ui/locales/ru ./tests/ui/locales/text.pot;
-	@echo 'checking code style:'
-	flake8 ./app ./tests/;
-
