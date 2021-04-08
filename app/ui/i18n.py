@@ -86,9 +86,10 @@ class I18N(metaclass=I18NMeta):
 
     def setup(self, path=None, domain=None, default_locale=None):
         logger.debug(f'path: {path}, domain: {domain}, '
-                     f'default_locale: {default_locale})')
+                     f'default_locale: {default_locale}')
 
         self.__init__(path, domain, default_locale)
+        self.reload()
         return self
 
     @classmethod
@@ -101,6 +102,7 @@ class I18N(metaclass=I18NMeta):
 
     def reload(self):
         self.locales = self.find_locales()
+        return self
 
     def set_locale(self, language: TAnyStr):
         """
@@ -130,7 +132,7 @@ class I18N(metaclass=I18NMeta):
                                    f"Подробней в docstring модуля "
                                    f"`app.ui.i18n`.")
 
-        logger.debug(f'translations: {translations}')
+        logger.debug(f'find translations: {translations.keys()}')
         return translations
 
     def gettext(self, singular, plural=None, n=1, locale=None):

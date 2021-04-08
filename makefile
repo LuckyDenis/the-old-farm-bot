@@ -10,10 +10,13 @@ help:
 	@echo 'make install-dev:     Установка зависимостей для разработки'
 	@echo 'make install:         Установка зависимостей для релиза'
 	@echo 'make test:            Запуск тестов'
+	@echo 'make migrate-commit:  Создает автоматический commit для базы данных'
+	@echo 'make migrate-update:  Отправит изменения в базу данных'
 	@echo ''
 	@echo '======================= Переменные окружения ========================'
 	@echo 'ENV:                  Определяет режиме запуска'
 	@echo 'CONFIG_PATH:          Путь до файла конфигурации'
+	@echo ''
 
 run:
 	if [ -f './.env' ]; then \
@@ -37,6 +40,20 @@ install:
 	$(CMD_INSTALL) ./requirements.txt
 
 
+migrate-commit:
+	export PYTHONPATH=./app:$$PYTHONPATH; \
+	export ENV=develop; \
+	export CONFIG_PATH=./etc/app/app.yaml; \
+	alembic revision -m "commit message" --autogenerate --head head
+
+
+migrate-update:
+	export PYTHONPATH=./app:$$PYTHONPATH; \
+	export ENV=develop; \
+	export CONFIG_PATH=./etc/app/app.yaml; \
+	alembic upgrade head
+
+
 test:
 	export PYTHONPATH=./app:$$PYTHONPATH; \
 	export ENV=testing; \
@@ -46,6 +63,8 @@ test:
 	pybabel init -i ./tests/ui/locales/text.pot -d ./tests/ui/locales -D text -l en; \
 	pybabel compile -d ./tests/ui/locales/ -D text; \
 	pybabel init -i ./tests/ui/locales/text.pot -d ./tests/ui/locales -D text -l ru; \
-	flake8 ./app ./tests/; \
 	pytest ./; \
 	rm -rf ./tests/ui/locales/en ./tests/ui/locales/ru ./tests/ui/locales/text.pot;
+	@echo 'checking code style:'
+	flake8 ./app ./tests/;
+
