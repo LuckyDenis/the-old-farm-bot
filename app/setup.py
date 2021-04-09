@@ -10,6 +10,7 @@ from aiogram.utils.executor import start_polling
 from aiogram.types import ParseMode
 
 from logging.config import dictConfig
+from logging import getLogger
 
 
 # ----------- ConfigReader Setup
@@ -17,6 +18,9 @@ config_reader = ConfigReader().setup()
 
 # ---------- Logging Setup
 dictConfig(config_reader.logging())
+
+logger = getLogger('app')
+logger.warning(f'CONFIG VERSION: {config_reader.version()}')
 
 
 # ---------- Aiogram Setup

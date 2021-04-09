@@ -18,6 +18,7 @@ develop: &base
 
   logging:
     version: 1
+    force: true
     disable_existing_loggers: true
     formatters:
       standard:

@@ -1,17 +1,17 @@
 # coding: utf8
 
 from logging import getLogger
+
 from gino import Gino
-from sqlalchemy import Column
 from sqlalchemy import BigInteger
-from sqlalchemy import String
 from sqlalchemy import Boolean
-from sqlalchemy import DateTime
-from sqlalchemy import func
 from sqlalchemy import CheckConstraint
+from sqlalchemy import Column
+from sqlalchemy import DateTime
 from sqlalchemy import ForeignKey
 from sqlalchemy import Integer
-
+from sqlalchemy import String
+from sqlalchemy import func
 
 logger = getLogger('app.database.models')
 
@@ -28,8 +28,75 @@ convention = {
 
 db.naming_convention = convention
 
+# todo: *_cost || *_price
 
-# todo: Подумать как лучше перегрузить метод __repr__
+
+class CategoryOfGameItem(db.Model):
+    __tablename__ = 'category_of_game_item'
+    __table_args__ = (
+        {'schema': 'component'}
+    )
+
+    id = Column(
+        String(16),
+        primary_key=True,
+        autoincrement=False
+    )
+
+
+class GameCurrency(db.Model):
+    __tablename__ = 'game_currency'
+    __table_args__ = (
+        {'schema': 'component'}
+    )
+
+    id = Column(
+        String(4),
+        primary_key=True,
+        autoincrement=False
+    )
+
+
+class GameItem(db.Model):
+    __tablename__ = 'game_item'
+    __table_args__ = (
+        CheckConstraint(
+            'sell_cost >= 0',
+            name='sell_cost_cannot_be_negative'
+        ),
+        {'schema': 'component'}
+    )
+
+    id = Column(
+        String(32),
+        primary_key=True,
+        autoincrement=False,
+        index=True
+    )
+    category = Column(
+        String(16),
+        ForeignKey(
+            CategoryOfGameItem.id,
+            ondelete='RESTRICT',
+            onupdate='CASCADE',
+            use_alter=True
+        ),
+        nullable=False
+    )
+    sell_cost = Column(
+        Integer(),
+        default=0
+    )
+    sell_game_currency = Column(
+        String(4),
+        ForeignKey(
+            GameCurrency.id,
+            ondelete='RESTRICT',
+            onupdate='CASCADE',
+            use_alter=True
+        ),
+        nullable=False
+    )
 
 
 class Gamer(db.Model):
@@ -54,40 +121,41 @@ class Gamer(db.Model):
         index=True,
         unique=True
     )
-
     is_accept_terms = Column(
         Boolean(),
         default=False,
         nullable=False
     )
-
+    is_admin = Column(
+        Boolean(),
+        default=False,
+        nullable=False
+    )
     is_blocked = Column(
         Boolean(),
         default=False,
         nullable=False
     )
-
     is_tester = Column(
         Boolean(),
         default=False,
         nullable=False
     )
-
     registered = Column(
-        DateTime(timezone=False),
+        DateTime(),
         server_default=func.now(),
         nullable=False
     )
-
     last_visited = Column(
-        DateTime(timezone=False),
+        DateTime(),
+        server_default=func.now(),
         server_onupdate=func.now(),
         nullable=False
     )
 
 
-class ChoiceOfFriend(db.Model):
-    __tablename__ = 'choice_of_friend'
+class SelectedFarm(db.Model):
+    __tablename__ = 'selected_farm'
     __table_args__ = (
         CheckConstraint(
             'id_gamer != id_friend',
@@ -117,7 +185,7 @@ class ChoiceOfFriend(db.Model):
             onupdate='CASCADE',
             use_alter=True
         ),
-        server_default=None
+        default=None
     )
 
 
@@ -156,4 +224,125 @@ class Purse(db.Model):
         Integer(),
         default=0,
         nullable=False
+    )
+
+
+class Pet(db.Model):
+    __tablename__ = 'pet'
+    __table_args__ = (
+        CheckConstraint(
+            'was_grabbed >= 0',
+            name='was_grabbed_cannot_be_negative'
+        ),
+        {'schema': 'profile'}
+    )
+
+    id_gamer = Column(
+        BigInteger(),
+        ForeignKey(
+            Gamer.id,
+            ondelete='CASCADE',
+            onupdate='CASCADE',
+            use_alter=True
+        ),
+        primary_key=True,
+        index=True,
+        unique=True
+    )
+    moniker = Column(
+        String(16),
+        default=None
+    )
+    not_hungry_to_time = Column(
+        DateTime(timezone=False),
+        default=0
+    )
+    was_grabbed = Column(
+        Integer(),
+        default=0
+    )
+
+
+class SelectedShopItem(db.Model):
+    __tablename__ = 'selected_shop_item'
+    __table_args__ = (
+        {'schema': 'profile'}
+    )
+
+    id_gamer = Column(
+        BigInteger(),
+        ForeignKey(
+            Gamer.id,
+            ondelete='CASCADE',
+            onupdate='CASCADE',
+            use_alter=True
+        ),
+        primary_key=True,
+        index=True,
+        unique=True
+    )
+    id_object = Column(
+        String(32),
+        ForeignKey(
+            GameItem.id,
+            ondelete='RESTRICT',
+            onupdate='CASCADE',
+            use_alter=True
+        ),
+        default=None
+    )
+
+
+class Gifts(db.Model):
+    __tablename__ = 'gifts'
+    __table_args__ = (
+        CheckConstraint(
+            'id_shelf > 0',
+            name='id_shelf_must_be_greater_than_zero'
+        ),
+        CheckConstraint(
+            'quantity >= 0 AND '
+            'id_object IS NOT NULL '
+            'OR quantity IS NULL',
+            name='quantity_must_be_positive_or_not_matter'
+        ),
+        CheckConstraint(
+            'quantity >= 0 AND'
+            'id_object IS NOT NULL '
+            'OR id_object IS NULL',
+            name='id_object_must_have_quantity'
+        ),
+        {'schema': 'profile'}
+    )
+    id_gamer = Column(
+        BigInteger(),
+        ForeignKey(
+            Gamer.id,
+            ondelete='CASCADE',
+            onupdate='CASCADE',
+            use_alter=True
+        ),
+        primary_key=True,
+        autoincrement=False,
+        index=True
+    )
+    id_shelf = Column(
+        Integer(),
+        primary_key=True,
+        autoincrement=False,
+        index=True
+    )
+    id_object = Column(
+        String(32),
+        ForeignKey(
+            GameItem.id,
+            ondelete='RESTRICT',
+            onupdate='CASCADE',
+            use_alter=True
+        ),
+        default=None
+    )
+    quantity = Column(
+        Integer(),
+        default=None
     )

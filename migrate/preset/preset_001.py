@@ -18,7 +18,9 @@ from sqlalchemy.schema import DropSchema
 
 def add_schemes(op):
     op.execute(CreateSchema('profile'))
+    op.execute(CreateSchema('component'))
 
 
 def del_schemes(op):
     op.execute(DropSchema('profile'))
+    op.execute(DropSchema('component'))
