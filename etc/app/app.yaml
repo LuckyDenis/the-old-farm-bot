@@ -77,7 +77,7 @@ develop: &base
         propogate: no
 
       app.configure.reader:
-        loevel: DEBUG
+        loevel: INFO
         propogate: no
 
   i18n:

@@ -127,10 +127,10 @@ class I18N(metaclass=I18NMeta):
                     translations[name] = gettext.GNUTranslations(fp)
 
             elif os.path.exists(mo_path[:-2] + "po"):
-                raise RuntimeError(f"Найден язык '{name}, "
-                                   f"но этот язык не скомпилирован. "
-                                   f"Подробней в docstring модуля "
-                                   f"`app.ui.i18n`.")
+                logger.warning(f"Найден язык '{name}, "
+                               f"но этот язык не скомпилирован. "
+                               f"Подробней в docstring модуля "
+                               f"`app.ui.i18n`.")
 
         logger.debug(f'find translations: {translations.keys()}')
         return translations

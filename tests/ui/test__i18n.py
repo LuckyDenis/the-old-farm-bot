@@ -9,7 +9,7 @@ import pytest
 from os.path import exists
 from os.path import join
 from os.path import dirname
-from app.ui.i18n import I18N, I18NMeta
+from app.ui.i18n import I18N, I18NMeta, logger
 
 LC_PATH = join(dirname(__file__), 'locales')
 LC_DOMAIN = 'text'
@@ -155,9 +155,16 @@ class TestI18N:
             lambda *_: ['en']
         )
 
+        logger_msg = []
+        monkeypatch.setattr(
+            logger, 'warning',
+            lambda msg: logger_msg.append(msg)
+        )
+
         i18n = self.create_i18n()
         locales = i18n.find_locales()
 
+        assert logger_msg == []
         assert isinstance(locales, dict)
         assert 'en' in locales
 
@@ -170,9 +177,15 @@ class TestI18N:
             lambda *_: ['ru']
         )
 
+        logger_msg = []
+        monkeypatch.setattr(
+            logger, 'warning',
+            lambda msg: logger_msg.append(msg)
+        )
+
         i18n = self.create_i18n()
-        with pytest.raises(RuntimeError):
-            i18n.find_locales()
+        i18n.find_locales()
+        assert logger_msg != []
 
     def test__skip_file_is_not_locales(self, monkeypatch):
         monkeypatch.setattr(

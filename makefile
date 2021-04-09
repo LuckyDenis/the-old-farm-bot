@@ -44,14 +44,14 @@ migrate-commit:
 	export PYTHONPATH=./app:$$PYTHONPATH; \
 	export ENV=develop; \
 	export CONFIG_PATH=./etc/app/app.yaml; \
-	alembic revision -m "commit message" --autogenerate --head head
+	alembic revision -m "commit message" --autogenerate --head head;
 
 
 migrate-update:
 	export PYTHONPATH=./app:$$PYTHONPATH; \
 	export ENV=develop; \
 	export CONFIG_PATH=./etc/app/app.yaml; \
-	alembic upgrade head
+	alembic upgrade head;
 
 
 test:
@@ -64,4 +64,6 @@ test:
 	pybabel init -i ./tests/ui/locales/text.pot -d ./tests/ui/locales -D text -l ru; \
 	flake8 ./app ./tests/; \
 	pytest ./; \
-	rm -rf ./tests/ui/locales/en ./tests/ui/locales/ru ./tests/ui/locales/text.pot;
+	export PYTEST_EXIT_CODE=$$?; \
+	rm -rf ./tests/ui/locales/en ./tests/ui/locales/ru ./tests/ui/locales/text.pot; \
+	exit $$PYTEST_EXIT_CODE;
