@@ -14,7 +14,10 @@ DATA = {
     ConfigSections.LOGGING: {
         'FOO': 'foo'
     },
-    ConfigSections.AIOGRAM: {
+    ConfigSections.BOT: {
+        'FOO': 'foo'
+    },
+    ConfigSections.DATABASE: {
         'FOO': 'foo'
     },
     ConfigSections.I18N: {
@@ -45,7 +48,7 @@ class TestConfigSections:
     @pytest.mark.parametrize(
         'section_name',
         (
-            'AIOGRAM', 'LOGGING', 'I18N', 'VERSION'
+            'BOT', 'LOGGING', 'I18N', 'DATABASE', 'VERSION'
         )
     )
     def test__has_section_name(self, section_name):
@@ -137,15 +140,15 @@ class TestConfigReader:
     def test__create_aiogram(self):
         config_reader = self.create_config_reader()
 
-        aiogram_section = config_reader.aiogram()
+        aiogram_section = config_reader.bot()
         assert is_dataclass(aiogram_section)
-        assert aiogram_section.FOO == DATA[ConfigSections.AIOGRAM]['FOO']
+        assert aiogram_section.FOO == DATA[ConfigSections.BOT]['FOO']
 
     def test__aiogram_once_create(self):
         config_reader = self.create_config_reader()
 
-        aiogram_section_a = config_reader.aiogram()
-        aiogram_section_b = config_reader.aiogram()
+        aiogram_section_a = config_reader.bot()
+        aiogram_section_b = config_reader.bot()
 
         assert id(aiogram_section_a) == id(aiogram_section_b)
 

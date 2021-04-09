@@ -10,6 +10,7 @@ from aiogram.utils.executor import start_polling
 from aiogram.types import ParseMode
 
 from logging.config import dictConfig
+from logging import getLogger
 
 
 # ----------- ConfigReader Setup
@@ -17,6 +18,9 @@ config_reader = ConfigReader().setup()
 
 # ---------- Logging Setup
 dictConfig(config_reader.logging())
+
+logger = getLogger('app')
+logger.warning(f'CONFIG VERSION: {config_reader.version()}')
 
 
 # ---------- Aiogram Setup
@@ -26,10 +30,10 @@ parse_modes = {
     'markdown_v2': ParseMode.MARKDOWN_V2
 }
 
-aiogram_section = config_reader.aiogram()
+bot_section = config_reader.bot()
 bot = Bot(
-    token=aiogram_section.APP_AG_API_TOKEN,
-    parse_mode=parse_modes.get(aiogram_section.APP_AG_PARSE_MOD)
+    token=bot_section.APP_BOT_API_TOKEN,
+    parse_mode=parse_modes.get(bot_section.APP_BOT_PARSE_MOD)
 )
 dp = Dispatcher(bot)
 
@@ -57,11 +61,11 @@ async def on_shutdown_for_webhook(*_):
     await bot.delete_webhook()
 
 
-async def on_startup_for_polling(*_):
-    i18n.reload()
+async def on_startup_for_polling(*_):  # noqa
+    pass
 
 
-async def on_shutdown_for_polling(*_):
+async def on_shutdown_for_polling(*_):  # noqa
     pass
 
 
@@ -70,10 +74,10 @@ def use_polling():
         dispatcher=dp,
         on_startup=on_startup_for_polling,
         on_shutdown=on_shutdown_for_polling,
-        skip_updates=aiogram_section.APP_AG_SKIP_UPDATES,
-        timeout=aiogram_section.APP_AG_TIMEOUT,
-        relax=aiogram_section.APP_AG_RELAX,
-        fast=aiogram_section.APP_AG_FAST
+        skip_updates=bot_section.APP_BOT_SKIP_UPDATES,
+        timeout=bot_section.APP_BOT_TIMEOUT,
+        relax=bot_section.APP_BOT_RELAX,
+        fast=bot_section.APP_BOT_FAST
     )
 
 
@@ -82,10 +86,10 @@ def use_webhook():
         dispatcher=dp,
         on_startup=on_startup_for_webhook,
         on_shutdown=on_shutdown_for_webhook,
-        skip_updates=aiogram_section.APP_AG_SKIP_UPDATES,
-        host=aiogram_section.APP_AG_WEBHOOK_HOST,
-        port=aiogram_section.APP_AG_WEBHOOK_PORT,
-        webhook_path=aiogram_section.APP_AG_WEBHOOK_PATH,
-        check_ip=aiogram_section.APP_AG_CHECK_IP,
-        retry_after=aiogram_section.APP_AG_RETRY_AFTER
+        skip_updates=bot_section.APP_BOT_SKIP_UPDATES,
+        host=bot_section.APP_BOT_WEBHOOK_HOST,
+        port=bot_section.APP_BOT_WEBHOOK_PORT,
+        webhook_path=bot_section.APP_BOT_WEBHOOK_PATH,
+        check_ip=bot_section.APP_BOT_CHECK_IP,
+        retry_after=bot_section.APP_BOT_RETRY_AFTER
     )

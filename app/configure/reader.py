@@ -2,6 +2,8 @@
 from __future__ import annotations
 from dataclasses import dataclass, make_dataclass
 from typing import TYPE_CHECKING
+from logging import getLogger
+
 
 from app.configure.file_reader import BaseFileReader
 from app.configure.file_reader import YAMLFileReader
@@ -17,11 +19,15 @@ if TYPE_CHECKING:
     from app.typehint import TDataClass
 
 
+logger = getLogger('app.configure.reader')
+
+
 @dataclass
 class ConfigSections:
-    AIOGRAM: TAnyStr = 'aiogram'
+    BOT: TAnyStr = 'bot'
     LOGGING: TAnyStr = 'logging'
     I18N: TAnyStr = 'i18n'
+    DATABASE: TAnyStr = 'database'
     VERSION: TAnyStr = 'VERSION'
 
 
@@ -32,7 +38,8 @@ class ConfigReader:
         self.data: TDict = dict()
         self._logging: TDict = dict()
         self._i18n: TDataClass = None
-        self._aiogram: TDataClass = None
+        self._bot: TDataClass = None
+        self._database: TDataClass = None
 
     def setup(self) -> TConfigReader:
         """
@@ -54,6 +61,7 @@ class ConfigReader:
                             f'не является типом {BaseFileReader}')
 
         self.data = file_reader().setup().read()
+        logger.debug(self.data)
         return self
 
     def _read_section(self, section_name: TAnyStr, env_merge: TBool = False):
@@ -100,7 +108,7 @@ class ConfigReader:
         cls = make_dataclass(cls_name, fields=fields, eq=False)
         return cls(**fields)
 
-    def aiogram(self) -> TDataClass:
+    def bot(self) -> TDataClass:
         """
         Отдаем `dataclass`, а не словарь, так как
         получившийся код будет чище, в разделе
@@ -108,14 +116,14 @@ class ConfigReader:
 
         :return: dataclass
         """
-        if not self._aiogram:
+        if not self._bot:
             section = self._read_section(
-                ConfigSections.AIOGRAM, env_merge=True
+                ConfigSections.BOT, env_merge=True
             )
-            self._aiogram = self._section_how_dataclass(
-                ConfigSections.AIOGRAM, section)
+            self._bot = self._section_how_dataclass(
+                ConfigSections.BOT, section)
 
-        return self._aiogram
+        return self._bot
 
     def logging(self) -> TDict:
         """
@@ -148,3 +156,20 @@ class ConfigReader:
                 ConfigSections.I18N, section)
 
         return self._i18n
+
+    def database(self) -> TDataClass:
+        """
+        Отдаем `dataclass`, а не словарь, так как
+        получившийся код будет чище, в разделе
+        настройки модуля `app.setup`.
+
+        :return: dataclass
+        """
+        if not self._database:
+            section = self._read_section(
+                ConfigSections.DATABASE, env_merge=True
+            )
+            self._database = self._section_how_dataclass(
+                ConfigSections.DATABASE, section)
+
+        return self._database

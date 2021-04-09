@@ -2,26 +2,27 @@ name: the configuration of application
 
 develop: &base
   VERSION: 1.0.0
-  aiogram:
-    APP_AG_API_TOKEN: '123456789:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
-    APP_AG_WEBHOCK_HOST: localhost
-    APP_AG_WEBHOCK_PATH: /
-    APP_AG_WEBHOCK_PORT: 3001
-    APP_AG_USE_POLLING: true
-    APP_AG_PARSE_MOD: html
-    APP_AG_SKIP_UPDATES: false
-    APP_AG_CHECK_IP: false
-    APP_AG_RETRY_AFTER: null
-    APP_AG_TIMEOUT: 1
-    APP_AG_RELAX: 0.1
-    APP_AG_FAST: true
+  bot:
+    APP_BOT_API_TOKEN: '123456789:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
+    APP_BOT_WEBHOCK_HOST: localhost
+    APP_BOT_WEBHOCK_PATH: /
+    APP_BOT_WEBHOCK_PORT: 3001
+    APP_BOT_USE_POLLING: true
+    APP_BOT_PARSE_MOD: html
+    APP_BOT_SKIP_UPDATES: false
+    APP_BOT_CHECK_IP: false
+    APP_BOT_RETRY_AFTER: null
+    APP_BOT_TIMEOUT: 1
+    APP_BOT_RELAX: 0.1
+    APP_BOT_FAST: true
 
   logging:
     version: 1
+    force: true
     disable_existing_loggers: true
     formatters:
       standard:
-        format: '[%(levelname)-7s][%(funcName)-15s][%(lineno)4d][MSG]: %(message)s'
+        format: '[%(levelname)-7s][%(filename)-15s][%(lineno)4d][MSG]: %(message)s'
 
     handlers:
       console:
@@ -72,13 +73,29 @@ develop: &base
         level: DEBUG
         propogate: no
 
+      app.configure:
+        level: DEBUG
+        propogate: no
 
-
+      app.configure.reader:
+        loevel: INFO
+        propogate: no
 
   i18n:
     APP_LC_PATH: './app/ui/locales'
     APP_LC_DOMAIN: 'app'
     APP_LC_DEFAULT_LOCALE: 'en'
+
+  database:
+    APP_DB_ENGINE: 'postgresql'
+    APP_DB_PORT: 5432
+    APP_DB_HOST: '127.0.0.1'
+    APP_DB_LOGIN: 'postgres'
+    APP_DB_PASSWORD: 'postgres'
+    APP_DB_NAME: 'the_old_farm_db'
+    APP_DB_MIN_POOL: 5
+    APP_DB_MAX_POOL: 10
+
 
 prodaction:
   <<: *base
