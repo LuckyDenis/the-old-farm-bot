@@ -1,7 +1,7 @@
 # coding: utf8
 
 import pytest
-from app.controllers import utils
+from app.controllers import sender
 from app.core.train import Train
 from app.ui.answer import AnswerWithText
 from app.ui.keyboards import BaseKeyboard
@@ -52,7 +52,7 @@ def train():
 @pytest.mark.unit
 class TestUnit:
     async def test__message_with_critical_error(self, train, bot):
-        await utils.message_with_critical_error(
+        await sender.message_with_critical_error(
             bot, train
         )
         assert filter(
@@ -63,7 +63,7 @@ class TestUnit:
         assert len(bot.chat_ids) == 1
 
     async def test__message_with_text(self, bot, answer):
-        await utils.message_with_text(bot, answer)
+        await sender.message_with_text(bot, answer)
 
         assert len(bot.chat_ids) == 1
         assert bot.chat_ids[-1] == answer.chat_id
@@ -71,11 +71,11 @@ class TestUnit:
     @pytest.mark.parametrize(
         ('message_type', 'handler'),
         (
-            (MessageType.TEXT, utils.message_with_text),
+            (MessageType.TEXT, sender.message_with_text),
         )
     )
     def test__search_send_handler(self, message_type, handler):
-        assert utils.search_send_handler(message_type) is handler
+        assert sender.search_send_handler(message_type) is handler
 
     async def test__send_messages_correct(
             self, monkeypatch, bot, train, answer):
@@ -89,12 +89,12 @@ class TestUnit:
                 chat_id=a.chat_id
             )
         monkeypatch.setattr(
-            utils, 'message_with_text',
+            sender, 'message_with_text',
             message_with_text
         )
 
         train.answers += [answer, answer]
-        await utils.send_messages(bot, train)
+        await sender.send_messages(bot, train)
 
         assert len(bot.chat_ids) == 2
 
@@ -106,12 +106,12 @@ class TestUnit:
             is_call_func[0] = True
 
         monkeypatch.setattr(
-            utils, 'message_with_critical_error',
+            sender, 'message_with_critical_error',
             message_with_critical_error
         )
 
         train.has_fail = True
-        await utils.send_messages(bot, train)
+        await sender.send_messages(bot, train)
 
         assert is_call_func[0] is True
 
@@ -123,7 +123,7 @@ class TestUnit:
             is_call_func[0] = True
 
         monkeypatch.setattr(
-            utils, 'message_with_critical_error',
+            sender, 'message_with_critical_error',
             message_with_critical_error
         )
 
@@ -131,11 +131,11 @@ class TestUnit:
             raise TypeError()
 
         monkeypatch.setattr(
-            utils, 'message_with_text',
+            sender, 'message_with_text',
             message_with_text
         )
 
         train.answers += [answer, answer]
-        await utils.send_messages(bot, train)
+        await sender.send_messages(bot, train)
 
         assert is_call_func[0] is True

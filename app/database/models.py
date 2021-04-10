@@ -28,13 +28,11 @@ convention = {
 
 db.naming_convention = convention
 
-# todo: *_cost || *_price
 
-
-class CategoryOfGameItem(db.Model):
-    __tablename__ = 'category_of_game_item'
+class GameItemCategory(db.Model):
+    __tablename__ = 'item_category'
     __table_args__ = (
-        {'schema': 'component'}
+        {'schema': 'game'}
     )
 
     id = Column(
@@ -45,9 +43,9 @@ class CategoryOfGameItem(db.Model):
 
 
 class GameCurrency(db.Model):
-    __tablename__ = 'game_currency'
+    __tablename__ = 'currency'
     __table_args__ = (
-        {'schema': 'component'}
+        {'schema': 'game'}
     )
 
     id = Column(
@@ -58,11 +56,11 @@ class GameCurrency(db.Model):
 
 
 class GameItem(db.Model):
-    __tablename__ = 'game_item'
+    __tablename__ = 'item'
     __table_args__ = (
         CheckConstraint(
-            'sell_cost >= 0',
-            name='sell_cost_cannot_be_negative'
+            'sell_price >= 0',
+            name='sell_price_cannot_be_negative'
         ),
         {'schema': 'component'}
     )
@@ -76,14 +74,14 @@ class GameItem(db.Model):
     category = Column(
         String(16),
         ForeignKey(
-            CategoryOfGameItem.id,
+            GameItemCategory.id,
             ondelete='RESTRICT',
             onupdate='CASCADE',
             use_alter=True
         ),
         nullable=False
     )
-    sell_cost = Column(
+    sell_price = Column(
         Integer(),
         default=0
     )
@@ -99,14 +97,14 @@ class GameItem(db.Model):
     )
 
 
-class Gamer(db.Model):
-    __tablename__ = 'gamer'
+class GamerAccount(db.Model):
+    __tablename__ = 'account'
     __table_args__ = (
         CheckConstraint(
             'registered <= last_visited',
             name='last_visited_greater_than_registered'
         ),
-        {'schema': 'profile'}
+        {'schema': 'gamer'}
     )
 
     id = Column(
@@ -154,20 +152,20 @@ class Gamer(db.Model):
     )
 
 
-class SelectedFarm(db.Model):
+class GamerSelectedFarm(db.Model):
     __tablename__ = 'selected_farm'
     __table_args__ = (
         CheckConstraint(
-            'id_gamer != id_friend',
+            'id_account != id_friend',
             name='id_gamer_not_eq_id_friend'
         ),
-        {'schema': 'profile'}
+        {'schema': 'gamer'}
     )
 
-    id_gamer = Column(
+    id_account = Column(
         BigInteger(),
         ForeignKey(
-            Gamer.id,
+            GamerAccount.id,
             ondelete='CASCADE',
             onupdate='CASCADE',
             use_alter=True
@@ -180,7 +178,7 @@ class SelectedFarm(db.Model):
     id_friend = Column(
         BigInteger(),
         ForeignKey(
-            Gamer.id,
+            GamerAccount.id,
             ondelete='DEFAULT',
             onupdate='CASCADE',
             use_alter=True
@@ -189,7 +187,7 @@ class SelectedFarm(db.Model):
     )
 
 
-class Purse(db.Model):
+class GamerPurse(db.Model):
     __tablename__ = 'purse'
     __table_args__ = (
         CheckConstraint(
@@ -200,13 +198,13 @@ class Purse(db.Model):
             'gems >= 0',
             name='gems cannot_be_negative'
         ),
-        {'schema': 'profile'}
+        {'schema': 'gamer'}
     )
 
-    id_gamer = Column(
+    id_account = Column(
         BigInteger(),
         ForeignKey(
-            Gamer.id,
+            GamerAccount.id,
             ondelete='CASCADE',
             onupdate='CASCADE',
             use_alter=True
@@ -227,20 +225,20 @@ class Purse(db.Model):
     )
 
 
-class Pet(db.Model):
+class GamerPet(db.Model):
     __tablename__ = 'pet'
     __table_args__ = (
         CheckConstraint(
             'was_grabbed >= 0',
             name='was_grabbed_cannot_be_negative'
         ),
-        {'schema': 'profile'}
+        {'schema': 'gamer'}
     )
 
     id_gamer = Column(
         BigInteger(),
         ForeignKey(
-            Gamer.id,
+            GamerAccount.id,
             ondelete='CASCADE',
             onupdate='CASCADE',
             use_alter=True
@@ -263,16 +261,16 @@ class Pet(db.Model):
     )
 
 
-class SelectedShopItem(db.Model):
+class GamerSelectedShopItem(db.Model):
     __tablename__ = 'selected_shop_item'
     __table_args__ = (
-        {'schema': 'profile'}
+        {'schema': 'gamer'}
     )
 
     id_gamer = Column(
         BigInteger(),
         ForeignKey(
-            Gamer.id,
+            GamerAccount.id,
             ondelete='CASCADE',
             onupdate='CASCADE',
             use_alter=True
@@ -281,7 +279,7 @@ class SelectedShopItem(db.Model):
         index=True,
         unique=True
     )
-    id_object = Column(
+    id_game_item = Column(
         String(32),
         ForeignKey(
             GameItem.id,
@@ -293,7 +291,7 @@ class SelectedShopItem(db.Model):
     )
 
 
-class Gifts(db.Model):
+class GamerGifts(db.Model):
     __tablename__ = 'gifts'
     __table_args__ = (
         CheckConstraint(
@@ -317,7 +315,7 @@ class Gifts(db.Model):
     id_gamer = Column(
         BigInteger(),
         ForeignKey(
-            Gamer.id,
+            GamerAccount.id,
             ondelete='CASCADE',
             onupdate='CASCADE',
             use_alter=True
@@ -332,7 +330,7 @@ class Gifts(db.Model):
         autoincrement=False,
         index=True
     )
-    id_object = Column(
+    id_game_item = Column(
         String(32),
         ForeignKey(
             GameItem.id,
@@ -345,4 +343,54 @@ class Gifts(db.Model):
     quantity = Column(
         Integer(),
         default=None
+    )
+
+
+class ShopShowcase(db.Model):
+    __tablename__ = 'shop_showcase'
+    __table_args__ = (
+        CheckConstraint(
+            'buy_price >= 0',
+            name='buy_prices_cannot_be_negative'
+        ),
+        CheckConstraint(
+            'quantity >= 0',
+            name='quantity_cannot_be_negative'
+        ),
+        {'schema': 'shop'}
+    )
+
+    id_game_item = Column(
+        String(32),
+        ForeignKey(
+            GameItem.id,
+            ondelete='RESTRICT',
+            onupdate='CASCADE',
+            use_alter=True
+        ),
+        primary_key=True,
+        autoincrement=False,
+        index=True
+    )
+    id_shelf = Column(
+        Integer(),
+        nullable=False
+    )
+    quantity = Column(
+        Integer(),
+        nullable=False
+    )
+    buy_price = Column(
+        Integer(),
+        nullable=False
+    )
+    buy_game_currency = Column(
+        String(4),
+        ForeignKey(
+            GameCurrency.id,
+            ondelete='RESTRICT',
+            onupdate='CASCADE',
+            use_alter=True
+        ),
+        nullable=False
     )
