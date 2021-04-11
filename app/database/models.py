@@ -12,6 +12,7 @@ from sqlalchemy import ForeignKey
 from sqlalchemy import Integer
 from sqlalchemy import String
 from sqlalchemy import func
+from sqlalchemy import Index
 
 logger = getLogger('app.database.models')
 
@@ -62,7 +63,7 @@ class GameItem(db.Model):
             'sell_price >= 0',
             name='sell_price_cannot_be_negative'
         ),
-        {'schema': 'component'}
+        {'schema': 'game'}
     )
 
     id = Column(
@@ -86,6 +87,165 @@ class GameItem(db.Model):
         default=0
     )
     sell_game_currency = Column(
+        String(4),
+        ForeignKey(
+            GameCurrency.id,
+            ondelete='RESTRICT',
+            onupdate='CASCADE',
+            use_alter=True
+        ),
+        nullable=False
+    )
+
+
+class GamePetFood(db.Model):
+    __tablename__ = 'pet_food'
+    __table_args__ = (
+        {'schema': 'game'}
+    )
+
+    id_item = Column(
+        String(32),
+        ForeignKey(
+            GameItem.id,
+            ondelete='RESTRICT',
+            onupdate='CASCADE',
+            use_alter=True
+        ),
+        primary_key=True,
+        autoincrement=False,
+        unique=True
+    )
+    saturation = Column(
+        Integer(),
+        nullable=False
+    )
+
+
+class GameEffect(db.Model):
+    __tablename__ = 'effect'
+    __table_args__ = (
+        CheckConstraint(
+            'multiplier != 0',
+            name='multiplier_cannot_be_zero'
+        ),
+        {'schema': 'game'}
+    )
+    id_item = Column(
+        String(32),
+        ForeignKey(
+            GameItem.id,
+            ondelete='RESTRICT',
+            onupdate='CASCADE',
+            use_alter=True
+        ),
+        primary_key=True,
+        autoincrement=False,
+        unique=True
+    )
+
+    multiplier = Column(
+        Integer(),
+        default=1,
+        nullable=False
+    )
+
+    maker_category = Column(
+        String(16),
+        ForeignKey(
+            GameItemCategory.id,
+            ondelete='RESTRICT',
+            onupdate='CASCADE',
+            use_alter=True
+        ),
+        nullable=False
+    )
+
+
+class GameRecipe(db.Model):
+    __tablename__ = 'maker'
+    __table_args__ = (
+        CheckConstraint(
+            'quantity > 0',
+            name='quantity_greater_than_zero'
+        ),
+        CheckConstraint(
+            'quantity_after_robbery > 0',
+            name='quantity_after_robbery_greater_than_zero'
+        ),
+        {'schema': 'game'}
+    )
+
+    maker = Column(
+        String(32),
+        ForeignKey(
+            GameItem.id,
+            ondelete='RESTRICT',
+            onupdate='CASCADE',
+            use_alter=True
+        ),
+        primary_key=True,
+        index=True,
+        autoincrement=False,
+        unique=True
+    )
+
+    product = Column(
+        String(32),
+        ForeignKey(
+            GameItem.id,
+            ondelete='RESTRICT',
+            onupdate='CASCADE',
+            use_alter=True
+        )
+    )
+    quantity = Column(
+        Integer(),
+        nullable=False
+    )
+
+    quantity_after_robbery = Column(
+        Integer(),
+        nullable=False
+    )
+    creation_time = Column(
+        DateTime(),
+        nullable=False
+    )
+    can_be_robbery = Column(
+        Boolean(),
+        default=True,
+        nullable=False
+    )
+
+
+class GameDestroyMaker(db.Model):
+    __tablename__ = 'destroy_maker'
+    __table_args__ = (
+        CheckConstraint(
+            'money_back >= 0',
+            name='money_back_cannot_be_negative'
+        ),
+        {'schema': 'game'}
+    )
+
+    id_maker = Column(
+        String(32),
+        ForeignKey(
+            GameRecipe.maker,
+            ondelete='RESTRICT',
+            onupdate='CASCADE',
+            use_alter=True
+        ),
+        primary_key=True,
+        unique=True,
+        autoincrement=False
+    )
+    money_back = Column(
+        Integer(),
+        nullable=False
+    )
+    money_back_currency = Column(
         String(4),
         ForeignKey(
             GameCurrency.id,
@@ -300,17 +460,17 @@ class GamerGifts(db.Model):
         ),
         CheckConstraint(
             'quantity >= 0 AND '
-            'id_object IS NOT NULL '
+            'id_item IS NOT NULL '
             'OR quantity IS NULL',
             name='quantity_must_be_positive_or_not_matter'
         ),
         CheckConstraint(
-            'quantity >= 0 AND'
-            'id_object IS NOT NULL '
-            'OR id_object IS NULL',
-            name='id_object_must_have_quantity'
+            'quantity >= 0 AND '
+            'id_item IS NOT NULL '
+            'OR id_item IS NULL',
+            name='id_item_must_have_quantity'
         ),
-        {'schema': 'profile'}
+        {'schema': 'gamer'}
     )
     id_gamer = Column(
         BigInteger(),
@@ -330,7 +490,7 @@ class GamerGifts(db.Model):
         autoincrement=False,
         index=True
     )
-    id_game_item = Column(
+    id_item = Column(
         String(32),
         ForeignKey(
             GameItem.id,
@@ -392,5 +552,387 @@ class ShopShowcase(db.Model):
             onupdate='CASCADE',
             use_alter=True
         ),
+        nullable=False
+    )
+
+
+class FarmWarehouse(db.Model):
+    __tablename__ = 'warehouse'
+    __table_args__ = (
+        CheckConstraint(
+            'quantity > 0 AND '
+            'id_item IS NOT NULL OR '
+            'quantity IS NULL AND '
+            'id_item IS NULL ',
+            name='valid_quantity_and_id_item'),
+        {'schema': 'farm'}
+    )
+    id_account = Column(
+        BigInteger(),
+        ForeignKey(
+            GamerAccount.id,
+            ondelete='CASCADE',
+            onupdate='CASCADE',
+            use_alter=True
+        ),
+        primary_key=True,
+        autoincrement=False,
+        unique=True
+    )
+    id_shelf = Column(
+        Integer(),
+        primary_key=True,
+        autoincrement=False
+    )
+    id_item = Column(
+        String(32),
+        ForeignKey(
+            GameItem.id,
+            ondelete='RESTRICT',
+            onupdate='CASCADE',
+            use_alter=True
+        ),
+        default=None
+    )
+    quantity = Column(
+        Integer(),
+        default=None
+    )
+    is_pick = Column(
+        Boolean(),
+        default=False,
+        nullable=False
+    )
+
+
+class FarmField(db.Model):
+    __tablename__ = 'field'
+    __table_args__ = (
+        Index(
+            'field_pk_idx',
+            'id_account',
+            'id_place'
+        ),
+        {'schema': 'farm'}
+    )
+
+    id_account = Column(
+        BigInteger(),
+        ForeignKey(
+            GamerAccount.id,
+            ondelete='CASCADE',
+            onupdate='CASCADE',
+            use_alter=True
+        ),
+        primary_key=True,
+        autoincrement=True
+    )
+    id_place = Column(
+        Integer(),
+        primary_key=True,
+        autoincrement=False
+    )
+    plant = Column(
+        String(32),
+        ForeignKey(
+            GameItem.id,
+            ondelete='RESTRICT',
+            onupdate='CASCADE',
+            use_alter=True
+        ),
+        default=None
+    )
+    will_grow = Column(
+        DateTime(),
+        default=None
+    )
+    was_fertilized = Column(
+        Boolean(),
+        default=False
+    )
+    was_weeded = Column(
+        Boolean(),
+        default=False
+    )
+    was_robbed = Column(
+        Boolean(),
+        default=False
+    )
+
+
+class FarmOrchard(db.Model):
+    __tablename__ = 'orchard'
+    __table_args__ = (
+        Index(
+            'orchard_pk_idx',
+            'id_account',
+            'id_place'
+        ),
+        {'schema': 'farm'}
+    )
+
+    id_account = Column(
+        BigInteger(),
+        ForeignKey(
+            GamerAccount.id,
+            ondelete='CASCADE',
+            onupdate='CASCADE',
+            use_alter=True
+        ),
+        primary_key=True,
+        autoincrement=True
+    )
+    id_place = Column(
+        Integer(),
+        primary_key=True,
+        autoincrement=False
+    )
+    tree = Column(
+        String(32),
+        ForeignKey(
+            GameItem.id,
+            ondelete='RESTRICT',
+            onupdate='CASCADE',
+            use_alter=True
+        ),
+        default=None
+    )
+    will_ripen = Column(
+        DateTime(),
+        default=None
+    )
+    was_fertilized = Column(
+        Boolean(),
+        default=False
+    )
+    was_watered = Column(
+        Boolean(),
+        default=False
+    )
+    was_robbed = Column(
+        Boolean(),
+        default=False
+    )
+    is_pick = Column(
+        Boolean(),
+        default=False
+    )
+
+
+class FarmMeadow(db.Model):
+    __tablename__ = 'meadow'
+    __table_args__ = (
+        Index(
+            'meadow_pk_idx',
+            'id_account',
+            'id_place'
+        ),
+        {'schema': 'farm'}
+    )
+
+    id_account = Column(
+        BigInteger(),
+        ForeignKey(
+            GamerAccount.id,
+            ondelete='CASCADE',
+            onupdate='CASCADE',
+            use_alter=True
+        ),
+        primary_key=True,
+        autoincrement=True
+    )
+    id_place = Column(
+        Integer(),
+        primary_key=True,
+        autoincrement=False
+    )
+    animal = Column(
+        String(32),
+        ForeignKey(
+            GameItem.id,
+            ondelete='RESTRICT',
+            onupdate='CASCADE',
+            use_alter=True
+        ),
+        default=None
+    )
+    will_produce = Column(
+        DateTime(),
+        default=None
+    )
+    was_given_vitamins = Column(
+        Boolean(),
+        default=False
+    )
+    was_given_water = Column(
+        Boolean(),
+        default=False
+    )
+    was_robbed = Column(
+        Boolean(),
+        default=False
+    )
+    is_pick = Column(
+        Boolean(),
+        default=False
+    )
+
+
+class QuestReward(db.Model):
+    __tablename__ = 'reward'
+    __table_args__ = (
+        CheckConstraint(
+            'quantity >= 0',
+            name='quantity_cannot_be_negative'
+        ),
+        {'schema': 'quest'}
+    )
+
+    id = Column(
+        Integer(),
+        primary_key=True,
+        index=True,
+        autoincrement=False
+    )
+    id_item = Column(
+        String(32),
+        ForeignKey(
+            GameItem.id,
+            ondelete='RESTRICT',
+            onupdate='CASCADE',
+            use_alter=True
+        ),
+        nullable=False
+    )
+    quantity = Column(
+        Integer(),
+        nullable=False
+    )
+
+
+class QuestTask(db.Model):
+    __tablename__ = 'task'
+    __table_args__ = (
+        CheckConstraint(
+            'quantity >= 0',
+            name='quantity_cannot_be_negative'
+        ),
+        {'schema': 'quest'}
+    )
+
+    id = Column(
+        Integer(),
+        primary_key=True,
+        autoincrement=False,
+        index=True
+    )
+
+    id_item = Column(
+        String(32),
+        ForeignKey(
+            GameItem.id,
+            ondelete='RESTRICT',
+            onupdate='CASCADE',
+            use_alter=True
+        ),
+        nullable=False
+    )
+
+    quantity = Column(
+        Integer(),
+        nullable=False
+    )
+
+
+class DonationCurrency(db.Model):
+    __tablename__ = 'currency'
+    __table_args__ = (
+        {'schema': 'donation'}
+    )
+
+    id = Column(
+        String(3),
+        primary_key=True,
+        autoincrement=False
+    )
+
+
+class DonationPackage(db.Model):
+    __tablename__ = 'package'
+    __table_args__ = (
+        CheckConstraint(
+            'quantity >= 0',
+            name='quantity_cannot_be_negative'
+        ),
+        CheckConstraint(
+            'sell_price >= 0',
+            name='sell_price_cannot_be_negative'
+        ),
+        {'schema': 'donation'}
+    )
+
+    id = Column(
+        Integer(),
+        primary_key=True,
+        autoincrement=False
+    )
+    quantity = Column(
+        Integer(),
+        nullable=False
+    )
+    sell_price = Column(
+        Integer(),
+        nullable=False
+    )
+    sell_currency = Column(
+        String(3),
+        ForeignKey(
+            DonationCurrency.id,
+            ondelete='RESTRICT',
+            onupdate='CASCADE',
+            use_alter=True
+        ),
+        nullable=False
+    )
+
+
+class DonationPayment(db.Model):
+    __tablename__ = 'payment'
+    __table_args__ = (
+        {'schema': 'donation'}
+    )
+
+    id = Column(
+        Integer(),
+        primary_key=True,
+        autoincrement=False
+    )
+    id_account = Column(
+        BigInteger(),
+        ForeignKey(
+            GamerAccount.id,
+            ondelete='CASCADE',
+            onupdate='CASCADE',
+            use_alter=True
+        ),
+        nullable=False
+    )
+    id_package = Column(
+        Integer(),
+        ForeignKey(
+            DonationPackage.id,
+            ondelete='RESTRICT',
+            onupdate='CASCADE',
+            use_alter=True
+        ),
+        nullable=False
+    )
+    datetime = Column(
+        DateTime(),
+        nullable=False,
+        server_default=func.now()
+    )
+    unique_id = Column(
+        String(128),
         nullable=False
     )

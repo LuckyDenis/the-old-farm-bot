@@ -9,7 +9,6 @@ def upgrade():
 def downgrade():
     ...
     del_schemes(op)
-
 """
 
 from sqlalchemy.schema import CreateSchema
@@ -17,12 +16,18 @@ from sqlalchemy.schema import DropSchema
 
 
 def add_schemes(op):
-    op.execute(CreateSchema('profile'))
-    op.execute(CreateSchema('component'))
+    op.execute(CreateSchema('gamer'))
+    op.execute(CreateSchema('game'))
     op.execute(CreateSchema('shop'))
+    op.execute(CreateSchema('donation'))
+    op.execute(CreateSchema('farm'))
+    op.execute(CreateSchema('quest'))
 
 
 def del_schemes(op):
-    op.execute(DropSchema('profile'))
-    op.execute(DropSchema('component'))
+    op.execute(DropSchema('gamer'))
+    op.execute(DropSchema('game'))
     op.execute(DropSchema('shop'))
+    op.execute(DropSchema('donation'))
+    op.execute(DropSchema('farm'))
+    op.execute(DropSchema('quest'))
