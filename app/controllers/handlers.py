@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from app.ui.commands import Commands
-from app.controllers.utils import send_messages
+from app.controllers.sender import send_messages
 from app.core import dispatcher as d
 from app.setup import dp, bot
 
