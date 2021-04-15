@@ -41,6 +41,10 @@ develop: &base
         level : INFO
         propogate: no
 
+      gino:
+        level: WARN
+        propogate: no
+
       app:
         level: INFO
         propogate: no
@@ -87,14 +91,15 @@ develop: &base
     APP_LC_DEFAULT_LOCALE: 'en'
 
   database:
-    APP_DB_ENGINE: 'postgresql'
+    APP_DB_DRIVER: 'postgresql'
     APP_DB_PORT: 5432
     APP_DB_HOST: '127.0.0.1'
-    APP_DB_LOGIN: 'postgres'
+    APP_DB_USERNAME: 'postgres'
     APP_DB_PASSWORD: 'postgres'
     APP_DB_NAME: 'the_old_farm_db'
     APP_DB_MIN_POOL: 5
     APP_DB_MAX_POOL: 10
+    APP_DB_ISOLATION_LEVEL: 'SERIALIZABLE'
 
 
 prodaction:

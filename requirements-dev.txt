@@ -1,4 +1,4 @@
-aiogram==2.12
+aiogram==2.12.1
 aiohttp==3.7.4.post0
 alembic==1.5.8
 async-timeout==3.0.1

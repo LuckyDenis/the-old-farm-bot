@@ -1,4 +1,4 @@
-aiogram==2.12
+aiogram==2.12.1
 alembic==1.5.8
 asyncpg==0.22.0
 Babel==2.9.0

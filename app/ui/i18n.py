@@ -132,7 +132,7 @@ class I18N(metaclass=I18NMeta):
                                f"Подробней в docstring модуля "
                                f"`app.ui.i18n`.")
 
-        logger.debug(f'find translations: {translations.keys()}')
+        logger.log(60, f'Найденные переводы: {translations.keys()}')
         return translations
 
     def gettext(self, singular, plural=None, n=1, locale=None):
