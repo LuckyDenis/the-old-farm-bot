@@ -1,8 +1,10 @@
 # coding: utf8
 
 from app.ui.i18n import I18N
+from app.database.connecter import DBConnect
 from app.configure.reader import ConfigReader
 from app.middlewares.unique_id import UniqueIdMiddleware
+from app.middlewares.database import DBMiddleware
 from aiogram import Dispatcher
 from aiogram import Bot
 from aiogram.utils.executor import start_webhook
@@ -11,8 +13,10 @@ from aiogram.types import ParseMode
 
 from logging.config import dictConfig
 from logging import getLogger
+from logging import addLevelName
 
 
+addLevelName(60, 'STARTUP')
 # ----------- ConfigReader Setup
 config_reader = ConfigReader().setup()
 
@@ -20,7 +24,7 @@ config_reader = ConfigReader().setup()
 dictConfig(config_reader.logging())
 
 logger = getLogger('app')
-logger.warning(f'CONFIG VERSION: {config_reader.version()}')
+logger.log(60, f'Версия конфигурации: {config_reader.version()}')
 
 
 # ---------- Aiogram Setup
@@ -38,8 +42,19 @@ bot = Bot(
 dp = Dispatcher(bot)
 
 
-# ---------- Middleware Setup
-dp.middleware.setup(UniqueIdMiddleware())
+# ---------- Aiogram Setup
+db_section = config_reader.database()
+db_connect = DBConnect().setup(
+    drive=db_section.APP_DB_DRIVER,
+    port=db_section.APP_DB_PORT,
+    host=db_section.APP_DB_HOST,
+    username=db_section.APP_DB_USERNAME,
+    password=db_section.APP_DB_PASSWORD,
+    dbname=db_section.APP_DB_NAME,
+    min_pool=db_section.APP_DB_MIN_POOL,
+    max_pool=db_section.APP_DB_MAX_POOL,
+    isolation_level=db_section.APP_DB_ISOLATION_LEVEL
+)
 
 
 # ---------- I18N Setup
@@ -51,22 +66,28 @@ i18n = I18N().setup(
 )
 
 
+# ---------- Middleware Setup
+dp.middleware.setup(UniqueIdMiddleware())
+dp.middleware.setup(DBMiddleware(db_connect))
+
+
 # ---------- Function for bot
 async def on_startup_for_webhook(*_, webhook_url):
-    i18n.reload()
+    await db_connect.test()
     await bot.set_webhook(webhook_url)
 
 
 async def on_shutdown_for_webhook(*_):
+    await db_connect.shutdown()
     await bot.delete_webhook()
 
 
-async def on_startup_for_polling(*_):  # noqa
-    pass
+async def on_startup_for_polling(*_):
+    await db_connect.test()
 
 
-async def on_shutdown_for_polling(*_):  # noqa
-    pass
+async def on_shutdown_for_polling(*_):
+    await db_connect.shutdown()
 
 
 def use_polling():
