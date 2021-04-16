@@ -30,7 +30,7 @@ reader = ConfigReader().setup()
 
 db_cfg = reader.database()
 url = (f'postgresql://'
-       f'{db_cfg.APP_DB_LOGIN}:'
+       f'{db_cfg.APP_DB_USERNAME}:'
        f'{db_cfg.APP_DB_PASSWORD}@'
        f'{db_cfg.APP_DB_HOST}/'
        f'{db_cfg.APP_DB_NAME}')

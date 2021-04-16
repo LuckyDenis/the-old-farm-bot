@@ -1,7 +1,7 @@
 # coding: utf8
 """
 Шаг 1: Извлекаем текст
-    $ pybabel extract --input-dirs=./app/ui/locales -o ./app/ui/locales/app.pot
+    $ pybabel extract --input-dirs=./app/ui -o ./app/ui/locales/app.pot
 
     Опции:
      * Извлечение текстов с поддержкой плюрализации
@@ -17,8 +17,8 @@
      --version=1.2
 
 Шаг 2: Создание *.po файлов. Например для en, ru языков
-    $ pybabel init -i ./app/ui/locales/app.pot -d locales -D app -l en
-    $ pybabel init -i ./app/ui/locales/app.pot -d locales -D app -l ru
+    $ pybabel init -i ./app/ui/locales/app.pot -d ./app/ui/locales -D app -l en
+    $ pybabel init -i ./app/ui/locales/app.pot -d ./app/ui/locales -D app -l ru
 
 Шаг 3: Перевести тексты расположенные в locales/{language}/LC_MESSAGES/app.po
 

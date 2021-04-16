@@ -1,4 +1,7 @@
 # coding: utf8
+from __future__ import annotations
+from typing import TYPE_CHECKING
+
 from sqlalchemy.engine.url import URL
 from sqlalchemy import func
 from gino import create_engine
@@ -6,11 +9,15 @@ from app.database.models import db
 from logging import getLogger
 
 
+if TYPE_CHECKING:
+    from app.typehint import TDBConnect
+
+
 logger = getLogger('app.database.connect')
 
 
 class DBConnectMeta(type):
-    instance = None
+    instance: TDBConnect = None
 
     def __call__(cls, *args, **kwargs):
         if not cls.instance:
@@ -76,7 +83,7 @@ class DBConnect:
                 max_size=self.max_pool,
                 isolation_level=self.isolation_level
             )
-        db.bind = self.engine
+            db.bind = self.engine
         return db
 
     async def shutdown(self):

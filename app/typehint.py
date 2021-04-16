@@ -16,6 +16,7 @@ from app.core.train import Train
 from app.ui.answer import AnswerWithText
 from app.ui.answer import BaseAnswer
 from app.ui.i18n import I18N
+from app.database.connecter import DBConnect
 
 
 TDict = dict
@@ -48,6 +49,9 @@ TStation = BaseStation
 TStations = List[Type[TStation]]
 
 
+TDBConnect = DBConnect
+
+
 __all__ = [
     'TTrain',
     'TAnswerWithText',
@@ -58,6 +62,7 @@ __all__ = [
     'TAnyStr',
     'TBool',
     'TDataClass',
+    'TDBConnect',
     'TStation',
     'TStations',
     'TMessage',
@@ -66,5 +71,6 @@ __all__ = [
     'TVisited',
     'TEnumAuto',
     'TContextVar',
-    'TI18N'
+    'TI18N',
+    'TKeyboard'
 ]
