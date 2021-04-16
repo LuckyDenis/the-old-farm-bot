@@ -19,16 +19,6 @@ logger = getLogger('app.database.models')
 
 db = Gino()
 
-convention = {
-  'ix': '%(column_0_label)s_idx',
-  'uq': '%(table_name)s_%(column_0_name)s_uq',
-  'ck': '%(table_name)s_%(constraint_name)s_ck',
-  'fk': '%(table_name)s_%(column_0_name)s_%(referred_table_name)s_fk',
-  'pk': '%(table_name)s_pk'
-}
-
-db.naming_convention = convention
-
 
 class GameItemCategory(db.Model):
     __tablename__ = 'item_category'
@@ -163,7 +153,7 @@ class GameEffect(db.Model):
 
 
 class GameRecipe(db.Model):
-    __tablename__ = 'maker'
+    __tablename__ = 'recipe'
     __table_args__ = (
         CheckConstraint(
             'quantity > 0',
