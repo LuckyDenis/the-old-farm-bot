@@ -101,6 +101,14 @@ develop: &base
     APP_DB_MAX_POOL: 10
     APP_DB_ISOLATION_LEVEL: 'SERIALIZABLE'
 
+  new_gamer:
+    APP_NG_COINS: 10
+    APP_NG_GENS: 0
+    APP_NG_FIELD_SIZE: 3
+    APP_NG_ORCHARD_SIZE: 1
+    APP_NG_MEADOW_SIZE: 1
+    APP_NG_WAREHOUSE_SIZE: 10
+    APP_NG_GIFT_SIZE: 5
 
 prodaction:
   <<: *base
