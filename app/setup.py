@@ -2,6 +2,7 @@
 
 from app.ui.i18n import I18N
 from app.database.connecter import DBConnect
+from app.database.query import NewGamer
 from app.configure.reader import ConfigReader
 from app.middlewares.unique_id import UniqueIdMiddleware
 from app.middlewares.database import DBMiddleware
@@ -42,7 +43,7 @@ bot = Bot(
 dp = Dispatcher(bot)
 
 
-# ---------- Aiogram Setup
+# ---------- DataBase Setup
 db_section = config_reader.database()
 db_connect = DBConnect().setup(
     drive=db_section.APP_DB_DRIVER,
@@ -55,6 +56,17 @@ db_connect = DBConnect().setup(
     max_pool=db_section.APP_DB_MAX_POOL,
     isolation_level=db_section.APP_DB_ISOLATION_LEVEL
 )
+
+
+# ---------- New User Setup
+new_gamer_section = config_reader.new_gamer()
+NewGamer.GENS = new_gamer_section.APP_NG_GENS
+NewGamer.COINS = new_gamer_section.APP_NG_COINS
+NewGamer.FIELD_SIZE = new_gamer_section.APP_NG_FIELD_SIZE
+NewGamer.ORCHARD_SIZE = new_gamer_section.APP_NG_ORCHARD_SIZE
+NewGamer.MEADOW_SIZE = new_gamer_section.APP_NG_MEADOW_SIZE
+NewGamer.WAREHOUSE_SIZE = new_gamer_section.APP_NG_WAREHOUSE_SIZE
+NewGamer.GIFT_SIZE = new_gamer_section.APP_NG_GIFT_SIZE
 
 
 # ---------- I18N Setup

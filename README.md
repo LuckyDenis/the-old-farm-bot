@@ -4,8 +4,8 @@
 ### Статус тестов
 |Ветка | Статус |
 |------|--------|
-|Master|[![CI](https://github.com/LuckyDenis/the-old-farm-bot/actions/workflows/ci.yaml/badge.svg?branch=master)](https://github.com/LuckyDenis/the-old-farm-bot/actions/workflows/ci.yaml) |
-|Dev   |[![CI](https://github.com/LuckyDenis/the-old-farm-bot/actions/workflows/ci.yaml/badge.svg?branch=dev)](https://github.com/LuckyDenis/the-old-farm-bot/actions/workflows/ci.yaml)|
+|master|[![CI](https://github.com/LuckyDenis/the-old-farm-bot/actions/workflows/ci.yaml/badge.svg?branch=master)](https://github.com/LuckyDenis/the-old-farm-bot/actions/workflows/ci.yaml) |
+|dev   |[![CI](https://github.com/LuckyDenis/the-old-farm-bot/actions/workflows/ci.yaml/badge.svg?branch=dev)](https://github.com/LuckyDenis/the-old-farm-bot/actions/workflows/ci.yaml)|
 
 
 ### Команды makefile

@@ -28,6 +28,7 @@ class ConfigSections:
     LOGGING: TAnyStr = 'logging'
     I18N: TAnyStr = 'i18n'
     DATABASE: TAnyStr = 'database'
+    NEW_GAMER: TAnyStr = 'new_gamer'
     VERSION: TAnyStr = 'VERSION'
 
 
@@ -40,6 +41,7 @@ class ConfigReader:
         self._i18n: TDataClass = None
         self._bot: TDataClass = None
         self._database: TDataClass = None
+        self._new_gamer: TDataClass = None
 
     def setup(self) -> TConfigReader:
         """
@@ -173,3 +175,20 @@ class ConfigReader:
                 ConfigSections.DATABASE, section)
 
         return self._database
+
+    def new_gamer(self) -> TDataClass:
+        """
+        Отдаем `dataclass`, а не словарь, так как
+        получившийся код будет чище, в разделе
+        настройки модуля `app.setup`.
+
+        :return: dataclass
+        """
+        if not self._new_gamer:
+            section = self._read_section(
+                ConfigSections.NEW_GAMER, env_merge=True
+            )
+            self._new_gamer = self._section_how_dataclass(
+                ConfigSections.NEW_GAMER, section)
+
+        return self._new_gamer

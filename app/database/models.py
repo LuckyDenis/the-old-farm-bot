@@ -274,6 +274,11 @@ class GamerAccount(db.Model):
         default=False,
         nullable=False
     )
+    is_bot = Column(
+        Boolean(),
+        default=False,
+        nullable=False
+    )
     is_admin = Column(
         Boolean(),
         default=False,

@@ -1,9 +1,12 @@
 # coding: utf8
 from __future__ import annotations
 from typing import TYPE_CHECKING
+from psycopg2 import Error as BasePsycopg2Error
+
 
 from logging import getLogger
 from app.ui import interface as ui
+from app.database import query as q
 
 if TYPE_CHECKING:
     from app.typehint import TTrain
@@ -68,7 +71,26 @@ class FinishSt(BaseStation):
         pass
 
 
-class NewUserSt(BaseStation):
+class IsGamerCreatedSt(BaseStation):
+    @classmethod
+    async def _query_is_created(cls, train: TTrain, data):
+        answer = {'is_created': None}
+        try:
+            result = await q.Account.is_created(data)
+            answer.update(result)
+        except BasePsycopg2Error:
+            train.has_fail = True
+        train.storage['query_is_created'] = answer
+
+    @classmethod
+    async def _stopover(cls, train: TTrain):
+        data = {
+            'id': TTrain.chat_id
+        }
+        await cls._query_is_created(train, data)
+
+
+class NewGamerSt(BaseStation):
     @classmethod
     async def _stopover(cls, train: TTrain):
         # TODO: Реализовать

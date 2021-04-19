@@ -67,9 +67,8 @@ class DBConnect:
         pg_info = await conn.scalar(func.version())
         logger.log(60, f'Postgres спецификация: {pg_info}')
 
-    async def get(self):
-        if not self.engine:
-            url = URL(
+    def make_connect_url(self):
+        return URL(
                 drivername=self.driver,
                 username=self.username,
                 password=self.password,
@@ -77,6 +76,10 @@ class DBConnect:
                 port=self.port,
                 database=self.dbname
             )
+
+    async def get(self):
+        if not self.engine:
+            url = self.make_connect_url()
             self.engine = await create_engine(
                 name_or_url=url,
                 min_size=self.min_pool,
